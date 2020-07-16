@@ -21,7 +21,7 @@ from netCDF4 import Dataset
 import json
 import plotly.offline as py
 
-
+#read in, reorganize data
 raw = pd.read_csv('NWQMC_Data.csv')
 water = pd.DataFrame()
 
@@ -41,14 +41,7 @@ water['id'] = raw['MonitoringLocationIdentifier']
 water['avg'] = water['val'].groupby(water['id']).transform('mean')
 water['show'] = water['avg'].astype(str) + " " + water['units']
 
-
-current_date = datetime.datetime(2020,1,1)
-base = datetime.datetime.today()
-base = base.replace(hour=0, minute=0, second=0)
-numdays = (base - datetime.datetime.fromisoformat('2020-01-01')).days
-date_list = [base - datetime.timedelta(days=x) for x in range(numdays)]
-date_list.insert(0,datetime.datetime(2020,1,1))
-water['avg1'] = water['val'].groupby(water['id']).transform('mean')
+#create dropdown, time slider
 
 
 app = dash.Dash(__name__)
