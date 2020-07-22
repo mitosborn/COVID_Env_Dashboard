@@ -8,15 +8,23 @@ import os
 # and the value is the dataframe
 def get_data(file_dir, data_folder_name):
     path_to_files = os.path.join(file_dir, data_folder_name)      
-    files = [f for f in listdir(path_to_files) if isfile(join(path_to_files, f))]
+    files = [f for f in listdir(path_to_files) if isfile(join(path_to_files, f)) and not f.startswith('.')]
     data = {}
     for fil in files:
-        parameter = fil[0:-5]
-        dataframe = pd.read_csv(path_to_files+'/'+ fil, sep = ',', parse_dates=['Date'], index_col = False)
+        parameter = fil[0:-4]
+        dataframe = pd.read_csv(path_to_files+'/'+ fil, sep = ',', index_col = False)
+        try:
+            dataframe.columns = dataframe.columns.str.lower()
+            if(parameter.lower() in dataframe.columns.values):
+                dataframe = dataframe.rename(columns = {parameter.lower():'value'})
+            print(dataframe.columns)
+            dataframe['date'] = pd.to_datetime(dataframe['date'])
+        except:
+            print("Has no date col")
         data[parameter] = dataframe
     return data
 
-# Method to form master dicionary that contains all data from the sub-groups.
+# Method to form master dictionary that contains all data from the sub-groups.
 # Outputs dictionary with key that is the name of the sub-group and value of
 # the dataframes for that sub-group
 def form_dataframe(file_dir,folder_names):
