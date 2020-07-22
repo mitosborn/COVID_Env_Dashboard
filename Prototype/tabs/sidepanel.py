@@ -8,7 +8,7 @@ import pandas
 from dash.dependencies import Input, Output
 import datetime
 from app import app
-
+import json
 from tabs import tab1, tab2
 from database import transforms
 
@@ -22,13 +22,13 @@ layout = html.Div([
          html.H2('Filters'),html.H3('Select a group'), dcc.Dropdown(
                        id='sub-group',
                          options = [{'label':i,'value':selection[i]} for i in selection.keys()],
-                         searchable = False, clearable = False, placeholder = 'Select a group'),
-        html.Div([html.H3('Select Parameter(s)'), dcc.Dropdown(id = 'parameter',searchable = False)
+                         searchable = False, clearable = False, placeholder = 'Select a group',value ='AQ'),
+        html.Div([html.H3('Select Parameter(s)'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NO2", "value": "NO2"}],value = 'NO2')
                    ]), html.Div([html.H3('Select Layers'),dcc.Checklist(id = 'layers',options=[
             {'label': 'Aquifers', 'value': 'Aquifers'},
             {'label': 'Water Shed', 'value': 'Watershed'} # we can ignore river basin
         ],
-        value=['Aquifers','Watershed'])]),html.Div([html.H3('Select Date'),dcc.DatePickerSingle(
+        value=[])]),html.Div([html.H3('Select Date'),dcc.DatePickerSingle(
         id='date',
         min_date_allowed=datetime.datetime(2020, 1, 1),
         max_date_allowed=datetime.datetime(2020, 7, 10),
@@ -43,6 +43,8 @@ layout = html.Div([
                     dcc.Tab(label='Sensor', value='tab-2')
                 ])
             , html.Div(id='tabs-content')
-        ]), width=6), dbc.Col(html.Div([dcc.Graph(id = 'model')]),width = 3)])
+        ]), width=5), dbc.Col(html.Div([dcc.Graph(id = 'model')]),width = 4)])
     
     ])
+
+
