@@ -24,11 +24,14 @@ layout = html.Div([
                          options = [{'label':i,'value':selection[i]} for i in selection.keys()],
                          searchable = False, clearable = False, placeholder = 'Select a group',value ='AQ'),
         html.Div([html.H3('Select Parameter(s)'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NO2", "value": "NO2"}],value = 'NO2')
-                   ]), html.Div([html.H3('Select Layers'),dcc.Checklist(id = 'layers',options=[
-            {'label': 'Aquifers', 'value': 'Aquifers'},
-            {'label': 'Water Shed', 'value': 'Watershed'} # we can ignore river basin
-        ],
-        value=[])]),html.Div([html.H3('Select Date'),dcc.DatePickerSingle(
+                   ]), html.Div([html.H3('Select Layers'),dbc.RadioItems(id = 'wtr_layer',options=[
+                {'label':'None','value':'None'},
+                {'label': 'Major Aquifers', 'value': 'Major Aquifers'},
+                {'label': 'River Basins', 'value': 'River Basins'},
+                {'label': 'Watersheds', 'value': 'Watersheds'}
+
+            ],
+        value='None')]),html.Div([html.H3('Select Date'),dcc.DatePickerSingle(
         id='date',
         min_date_allowed=datetime.datetime(2020, 1, 1),
         max_date_allowed=datetime.datetime(2020, 7, 10),
@@ -43,7 +46,18 @@ layout = html.Div([
                     dcc.Tab(label='Sensor', value='tab-2')
                 ])
             , html.Div(id='tabs-content')
-        ]), width=5), dbc.Col(html.Div([dcc.Graph(id = 'model')]),width = 4)])
+        ]), width=5), dbc.Col(html.Div([dcc.Tabs(id="temp", value='temp-1', children=[
+                    dcc.Tab(label='Model', value='temp-1')
+                ]),dcc.Graph(id = 'model')]
+    #                                    style = {
+    # "position": "fixed",
+    # "top": 200,
+    # "left": 1050,
+    # "bottom": 0,
+    # "width": "80rem",
+    # "padding": "2rem 1rem",
+    # #"background-color": "#f8f9fa",}
+    ),width = 4)])
     
     ])
 

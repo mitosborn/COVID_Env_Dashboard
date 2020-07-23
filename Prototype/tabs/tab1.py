@@ -15,13 +15,18 @@ from datetime import datetime as dt
 import re
 import geojson
 import plotly.express as px
+import os
 df = transforms.master_df
 
 PAGE_SIZE = 50
 mapbox_key = 'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3MDBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
+# Import jsons
+directory = os.path.dirname(os.path.abspath(__file__))
+directory = os.path.join(directory,'jsons')
+os.chdir(directory)
 with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
     counties = json.load(response)
-with open('/Users/mitos/Documents/GitHub/data_visualization/Prototype/tabs/major_aq.json') as f:
+with open('major_aq.json') as f:
     majoraq = geojson.load(f)
 local_df = pd.DataFrame()
 
@@ -30,7 +35,7 @@ local_df = pd.DataFrame()
 #                 ,dbc.Col(
 layout = html.Div(dcc.Graph(id= 'cty_map'))
 
-@app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('layers','value'),Input('date','date')])
+@app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date','date')])
 def get_map(parameter, sub_group, layer,date):
     date = dt.strptime(re.split('T| ', date)[0], '%Y-%m-%d')
     fig = go.Figure(go.Choroplethmapbox(geojson=counties,
@@ -63,16 +68,13 @@ def get_map(parameter, sub_group, layer,date):
                                   accesstoken=mapbox_key, style='basic',
                                   zoom=4.5,
                                   ))
-    if 'Aquifers' in layer:
+    if layer == 'Major Aquifers':
         fig.update_layout(mapbox=dict(layers=[{'sourcetype': 'geojson', 'opacity': 0.6,
                                                'source': majoraq, 'type': "fill", 'color': "royalblue"}]))
 
     return fig
 
-@app.callback(
-    [
-     Output(component_id='model', component_property='figure')],
-    [Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value')])
+@app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value')])
 def display_click_data(clickData,parameter, sub_group):
     if clickData is not None:
         local_df = df[sub_group][parameter]
@@ -86,15 +88,25 @@ def display_click_data(clickData,parameter, sub_group):
         print(select.head())
         select = select.groupby(['date','fips','county']).mean().reset_index()
         select['date'] = pd.to_datetime(select['date'])
-        n = [num for num in range(len(select['value']))]
 
-        fig = px.line(select, x=n, y="value", title='Concentration of '+parameter)
+        fig = px.line(select, x='date', y="value", title='Concentration of '+parameter)
 
         fig.update_layout(xaxis_title='Time',
-                          yaxis_title='CH4 Concentration (e-6 ppv)')
+                          yaxis_title=parameter+' Concentration (e-6 ppv)')
 
         fig.update_traces(marker_size=20)
-
+        fig.update_xaxes(
+            rangeslider_visible=True,
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1, label="1m", step="month", stepmode="backward"),
+                    dict(count=6, label="6m", step="month", stepmode="backward"),
+                    dict(count=1, label="YTD", step="year", stepmode="todate"),
+                    dict(count=1, label="1y", step="year", stepmode="backward"),
+                    dict(step="all")
+                ])
+            )
+        )
     #return (fips_number, fig)
         return fig
     return px.line()
