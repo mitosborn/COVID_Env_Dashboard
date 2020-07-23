@@ -1,0 +1,257 @@
+ County Name ,FIPS #, County # ,Metropolitan Statistical Area (MSA)
+ Anderson ,001, 1 ,--
+ Andrews ,003, 2 ,--
+ Angelina ,005, 3 ,--
+ Aransas ,007, 4 ,Corpus Christi
+ Archer ,009, 5 ,Wichita Falls
+ Armstrong ,011, 6 ,Amarillo
+ Atascosa ,013, 7 ,San Antonio-New Braunfels
+ Austin ,015, 8 ,Houston-The Woodlands-Sugar Land
+ Bailey ,017, 9 ,--
+ Bandera ,019, 10 ,San Antonio-New Braunfels
+ Bastrop ,021, 11 ,Austin-Round Rock
+ Baylor ,023, 12 ,--
+ Bee ,025, 13 ,--
+ Bell ,027, 14 ,Killeen-Temple
+ Bexar ,029, 15 ,San Antonio-New Braunfels
+ Blanco ,031, 16 ,--
+ Borden ,033, 17 ,--
+ Bosque ,035, 18 ,--
+ Bowie ,037, 19 ,Texarkana
+ Brazoria ,039, 20 ,Houston-The Woodlands-Sugar Land
+ Brazos ,041, 21 ,College Station-Bryan
+ Brewster ,043, 22 ,--
+ Briscoe ,045, 23 ,--
+ Brooks ,047, 24 ,--
+ Brown ,049, 25 ,--
+ Burleson ,051, 26 ,College Station-Bryan
+ Burnet ,053, 27 ,--
+ Caldwell ,055, 28 ,Austin-Round Rock
+ Calhoun ,057, 29 ,--
+ Callahan ,059, 30 ,Abilene
+ Cameron ,061, 31 ,Brownsville-Harlingen
+ Camp ,063, 32 ,--
+ Carson ,065, 33 ,Amarillo
+ Cass ,067, 34 ,--
+ Castro ,069, 35 ,--
+ Chambers ,071, 36 ,Houston-The Woodlands-Sugar Land
+ Cherokee ,073, 37 ,--
+ Childress ,075, 38 ,--
+ Clay ,077, 39 ,Wichita Falls
+ Cochran ,079, 40 ,--
+ Coke ,081, 41 ,--
+ Coleman ,083, 42 ,--
+ Collin ,085, 43 ,Dallas-Fort Worth-Arlington
+ Collingsworth ,087, 44 ,--
+ Colorado ,089, 45 ,--
+ Comal ,091, 46 ,San Antonio-New Braunfels
+ Comanche ,093, 47 ,--
+ Concho ,095, 48 ,--
+ Cooke ,097, 49 ,--
+ Coryell ,099, 50 ,Killeen-Temple
+ Cottle ,101, 51 ,--
+ Crane ,103, 52 ,--
+ Crockett ,105, 53 ,--
+ Crosby ,107, 54 ,Lubbock
+ Culberson ,109, 55 ,--
+ Dallam ,111, 56 ,--
+ Dallas ,113, 57 ,Dallas-Fort Worth-Arlington
+ Dawson ,115, 58 ,--
+ Deaf Smith ,117, 59 ,--
+ Delta ,119, 60 ,--
+ Denton ,121, 61 ,Dallas-Fort Worth-Arlington
+ DeWitt ,123, 62 ,--
+ Dickens ,125, 63 ,--
+ Dimmit ,127, 64 ,--
+ Donley ,129, 65 ,--
+ Duval ,131, 66 ,--
+ Eastland ,133, 67 ,--
+ Ector ,135, 68 ,Odessa
+ Edwards ,137, 69 ,--
+ Ellis ,139, 70 ,Dallas-Fort Worth-Arlington
+ El Paso ,141, 71 ,El Paso
+ Erath ,143, 72 ,--
+ Falls ,145, 73 ,Waco
+ Fannin ,147, 74 ,--
+ Fayette ,149, 75 ,--
+ Fisher ,151, 76 ,--
+ Floyd ,153, 77 ,--
+ Foard ,155, 78 ,--
+ Fort Bend ,157, 79 ,Houston-The Woodlands-Sugar Land
+ Franklin ,159, 80 ,--
+ Freestone ,161, 81 ,--
+ Frio ,163, 82 ,--
+ Gaines ,165, 83 ,--
+ Galveston ,167, 84 ,Houston-The Woodlands-Sugar Land
+ Garza ,169, 85 ,--
+ Gillespie ,171, 86 ,--
+ Glasscock ,173, 87 ,--
+ Goliad ,175, 88 ,Victoria
+ Gonzales ,177, 89 ,--
+ Gray ,179, 90 ,--
+ Grayson ,181, 91 ,Sherman-Denison
+ Gregg ,183, 92 ,Longview
+ Grimes ,185, 93 ,--
+ Guadalupe ,187, 94 ,San Antonio-New Braunfels
+ Hale ,189, 95 ,--
+ Hall ,191, 96 ,--
+ Hamilton ,193, 97 ,--
+ Hansford ,195, 98 ,--
+ Hardeman ,197, 99 ,--
+ Hardin ,199, 100 ,Beaumont-Port Arthur
+ Harris ,201, 101 ,Houston-The Woodlands-Sugar Land
+ Harrison ,203, 102 ,--
+ Hartley ,205, 103 ,--
+ Haskell ,207, 104 ,--
+ Hays ,209, 105 ,Austin-Round Rock
+ Hemphill ,211, 106 ,--
+ Henderson ,213, 107 ,--
+ Hidalgo ,215, 108 ,McAllen-Edinburgh-Mission
+ Hill ,217, 109 ,--
+ Hockley ,219, 110 ,--
+ Hood ,221, 111 ,Dallas-Fort Worth-Arlington
+ Hopkins ,223, 112 ,--
+ Houston ,225, 113 ,--
+ Howard ,227, 114 ,--
+ Hudspeth ,229, 115 ,El Paso
+ Hunt ,231, 116 ,Dallas-Fort Worth-Arlington
+ Hutchinson ,233, 117 ,--
+ Irion ,235, 118 ,San Angelo
+ Jack ,237, 119 ,--
+ Jackson ,239, 120 ,--
+ Jasper ,241, 121 ,--
+ Jeff Davis ,243, 122 ,--
+ Jefferson ,245, 123 ,Beaumont-Port Arthur
+ Jim Hogg ,247, 124 ,--
+ Jim Wells ,249, 125 ,--
+ Johnson ,251, 126 ,Dallas-Fort Worth-Arlington
+ Jones ,253, 127 ,Abilene
+ Karnes ,255, 128 ,--
+ Kaufman ,257, 129 ,Dallas-Fort Worth-Arlington
+ Kendall ,259, 130 ,San Antonio-New Braunfels
+ Kenedy ,261, 131 ,--
+ Kent ,263, 132 ,--
+ Kerr ,265, 133 ,--
+ Kimble ,267, 134 ,--
+ King ,269, 135 ,--
+ Kinney ,271, 136 ,--
+ Kleberg ,273, 137 ,--
+ Knox ,275, 138 ,--
+ Lamar ,277, 139 ,--
+ Lamb ,279, 140 ,--
+ Lampasas ,281, 141 ,Killeen-Temple
+ La Salle ,283, 142 ,--
+ Lavaca ,285, 143 ,--
+ Lee ,287, 144 ,--
+ Leon ,289, 145 ,--
+ Liberty ,291, 146 ,Houston-The Woodlands-Sugar Land
+ Limestone ,293, 147 ,--
+ Lipscomb ,295, 148 ,--
+ Live Oak ,297, 149 ,--
+ Llano ,299, 150 ,--
+ Loving ,301, 151 ,--
+ Lubbock ,303, 152 ,Lubbock
+ Lynn ,305, 153 ,Lubbock
+ McCulloch ,307, 154 ,--
+ McLennan ,309, 155 ,Waco
+ McMullen ,311, 156 ,--
+ Madison ,313, 157 ,--
+ Marion ,315, 158 ,--
+ Martin ,317, 159 ,Midland
+ Mason ,319, 160 ,--
+ Matagorda ,321, 161 ,--
+ Maverick ,323, 162 ,--
+ Medina ,325, 163 ,San Antonio-New Braunfels
+ Menard ,327, 164 ,--
+ Midland ,329, 165 ,Midland
+ Milam ,331, 166 ,--
+ Mills ,333, 167 ,--
+ Mitchell ,335, 168 ,--
+ Montague ,337, 169 ,--
+ Montgomery ,339, 170 ,Houston-The Woodlands-Sugar Land
+ Moore ,341, 171 ,--
+ Morris ,343, 172 ,--
+ Motley ,345, 173 ,--
+ Nacogdoches ,347, 174 ,--
+ Navarro ,349, 175 ,--
+ Newton ,351, 176 ,Beaumont-Port Arthur
+ Nolan ,353, 177 ,--
+ Nueces ,355, 178 ,Corpus Christi
+ Ochiltree ,357, 179 ,--
+ Oldham ,359, 180 ,Amarillo
+ Orange ,361, 181 ,Beaumont-Port Arthur
+ Palo Pinto ,363, 182 ,--
+ Panola ,365, 183 ,--
+ Parker ,367, 184 ,Dallas-Fort Worth-Arlington
+ Parmer ,369, 185 ,--
+ Pecos ,371, 186 ,--
+ Polk ,373, 187 ,--
+ Potter ,375, 188 ,Amarillo
+ Presidio ,377, 189 ,--
+ Rains ,379, 190 ,--
+ Randall ,381, 191 ,Amarillo
+ Reagan ,383, 192 ,--
+ Real ,385, 193 ,--
+ Red River ,387, 194 ,--
+ Reeves ,389, 195 ,--
+ Refugio ,391, 196 ,--
+ Roberts ,393, 197 ,--
+ Robertson ,395, 198 ,College Station-Bryan
+ Rockwall ,397, 199 ,Dallas-Fort Worth-Arlington
+ Runnels ,399, 200 ,--
+ Rusk ,401, 201 ,Longview
+ Sabine ,403, 202 ,--
+ San Augustine ,405, 203 ,--
+ San Jacinto ,407, 204 ,--
+ San Patricio ,409, 205 ,Corpus Christi
+ San Saba ,411, 206 ,--
+ Schleicher ,413, 207 ,--
+ Scurry ,415, 208 ,--
+ Shackelford ,417, 209 ,--
+ Shelby ,419, 210 ,--
+ Sherman ,421, 211 ,--
+ Smith ,423, 212 ,Tyler
+ Somervell ,425, 213 ,Dallas-Fort Worth-Arlington
+ Starr ,427, 214 ,--
+ Stephens ,429, 215 ,--
+ Sterling ,431, 216 ,--
+ Stonewall ,433, 217 ,--
+ Sutton ,435, 218 ,--
+ Swisher ,437, 219 ,--
+ Tarrant ,439, 220 ,Dallas-Fort Worth-Arlington
+ Taylor ,441, 221 ,Abilene
+ Terrell ,443, 222 ,--
+ Terry ,445, 223 ,--
+ Throckmorton ,447, 224 ,--
+ Titus ,449, 225 ,--
+ Tom Green ,451, 226 ,San Angelo
+ Travis ,453, 227 ,Austin-Round Rock
+ Trinity ,455, 228 ,--
+ Tyler ,457, 229 ,--
+ Upshur ,459, 230 ,Longview
+ Upton ,461, 231 ,--
+ Uvalde ,463, 232 ,--
+ Val Verde ,465, 233 ,--
+ Van Zandt ,467, 234 ,--
+ Victoria ,469, 235 ,Victoria
+ Walker ,471, 236 ,--
+ Waller ,473, 237 ,Houston-The Woodlands-Sugar Land
+ Ward ,475, 238 ,--
+ Washington ,477, 239 ,--
+ Webb ,479, 240 ,Laredo
+ Wharton ,481, 241 ,--
+ Wheeler ,483, 242 ,--
+ Wichita ,485, 243 ,Wichita Falls
+ Wilbarger ,487, 244 ,--
+ Willacy ,489, 245 ,--
+ Williamson ,491, 246 ,Austin-Round Rock
+ Wilson ,493, 247 ,San Antonio-New Braunfels
+ Winkler ,495, 248 ,--
+ Wise ,497, 249 ,Dallas-Fort Worth-Arlington
+ Wood ,499, 250 ,--
+ Yoakum ,501, 251 ,--
+ Young ,503, 252 ,--
+ Zapata ,505, 253 ,--
+ Zavala ,507, 254 ,--
+Back to CHS Useful Information,,,
+End of Worksheet,,,
