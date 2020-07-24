@@ -24,10 +24,14 @@ mapbox_key = 'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3MDBpcTJ3cXR4b3owdDQwaCJ
 directory = os.path.dirname(os.path.abspath(__file__))
 directory = os.path.join(directory,'jsons')
 os.chdir(directory)
-with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
-    counties = json.load(response)
+with open('counties.json') as f:
+    counties = geojson.load(f)
 with open('major_aq.json') as f:
     majoraq = geojson.load(f)
+with open('river_basin.json') as f:
+    riverbasin = geojson.load(f)
+with open('watershed.json') as f:
+    watershed = geojson.load(f)
 local_df = pd.DataFrame()
 
 #  html.Div([
@@ -36,42 +40,42 @@ local_df = pd.DataFrame()
 layout = html.Div(dcc.Graph(id= 'cty_map'))
 
 @app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date','date')])
-def get_map(parameter, sub_group, layer,date):
+def get_map(parameter, sub_group, option_water,date):
     date = dt.strptime(re.split('T| ', date)[0], '%Y-%m-%d')
-    fig = go.Figure(go.Choroplethmapbox(geojson=counties,
-                                    colorscale='ice',
-                                    colorbar_thickness=20
-                                    ))
-    if sub_group is not None and parameter is not None:
-        # print(df[sub_group].keys())
-        local_df = df[sub_group][parameter]
-        local_df = local_df[local_df['date'] == date]
-        print(type(date))
-        print(parameter)
 
-        trace = go.Choroplethmapbox(geojson=counties,
-                                    locations=local_df['fips'],
-                                    z=local_df['value'],
-                                    colorscale='ice',
-                                    colorbar_thickness=20,
-                                    text=local_df['county'],
-                                    marker_line_color='white', customdata=local_df['fips'],
-                                    hovertemplate='<b>County</b>: <b>%{text}</b>' +
-                                                  '<br> <b>Val </b>: %{z}<br>' + '<extra></extra>'
-                                    )
-        fig = go.Figure(data=trace)
-        fig.update_layout(title_text= 'Average of {} on {}'.format(parameter,date.strftime("%B %d, %Y")))
-    else:
-        fig.update_layout(title_text = 'Select a group and parameter')
-    fig.update_layout(width=700, height=700,
+    # print(df[sub_group].keys())
+    local_df = df[sub_group][parameter]
+    local_df = local_df[local_df['date'] == date]
+    print(type(date))
+    print(parameter)
+
+    trace = go.Choroplethmapbox(geojson=counties,
+                                locations=local_df['fips'].astype(str),
+                                z=local_df['value'],
+                                colorscale='reds',featureidkey= 'properties.FIPS',
+                                colorbar_thickness=20,
+                                text=local_df['county'],
+                                marker_line_color='white', customdata=local_df['fips'],
+                                hovertemplate='<b>County</b>: <b>%{text}</b>' +
+                                              '<br> <b>Val </b>: %{z}<br>' + '<extra></extra>'
+                                )
+    fig = go.Figure(data=trace)
+    fig.update_layout(title_text= 'Average of {} on {}'.format(parameter,date.strftime("%B %d, %Y")),width=700, height=700,
                       mapbox=dict(center=dict(lat=31.3915, lon=-99.1707),
                                   accesstoken=mapbox_key, style='basic',
-                                  zoom=4.5,
+                                  zoom=4.5,layers=[{'sourcetype': 'geojson', 'opacity': .1,
+                                           'source': counties, 'type': "fill", 'color': None}]
                                   ))
-    if layer == 'Major Aquifers':
+    # add aquifer polygons
+    if option_water == 'Major Aquifers':
         fig.update_layout(mapbox=dict(layers=[{'sourcetype': 'geojson', 'opacity': 0.6,
                                                'source': majoraq, 'type': "fill", 'color': "royalblue"}]))
-
+    if option_water == 'River Basins':
+        fig.update_layout(mapbox=dict(layers=[{'sourcetype': 'geojson', 'opacity': 0.6,
+                                               'source': riverbasin, 'type': "line", 'color': "royalblue"}]))
+    if option_water == 'Watersheds':
+        fig.update_layout(mapbox=dict(layers=[{'sourcetype': 'geojson', 'opacity': 0.6,
+                                               'source': watershed, 'type': "line", 'color': "royalblue"}]))
     return fig
 
 @app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value')])
