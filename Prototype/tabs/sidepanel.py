@@ -23,7 +23,7 @@ layout = html.Div([
                        id='sub-group',
                          options = [{'label':i,'value':selection[i]} for i in selection.keys()],
                          searchable = False, clearable = False, placeholder = 'Select a group',value ='AQ'),
-        html.Div([html.H3('Select Parameter(s)'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NO2", "value": "NO2"}],value = 'NO2')
+        html.Div([html.H3('Select Parameter(s)'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NO2", "value": "NO2"}],clearable = False,value = 'NO2')
                    ]), html.Div([html.H3('Select Layers'),dbc.RadioItems(id = 'wtr_layer',options=[
                 {'label':'None','value':'None'},
                 {'label': 'Major Aquifers', 'value': 'Major Aquifers'},

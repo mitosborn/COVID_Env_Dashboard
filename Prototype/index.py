@@ -26,9 +26,9 @@ param_output = {'GHG':[{"label": "Greenhouse Gas - XCO2", "value": "XCO2"},
                      {"label": "Water Quality - Orthophosphate", "value": "Orthophosphate"}],'ECON':[{"label": "COVID Cases", "value": "COVID Cases"}]}
 
 
-@app.callback(Output('parameter','options'),[Input('sub-group','value')])
+@app.callback([Output('parameter','options'),Output('parameter','value')],[Input('sub-group','value')])
 def return_parameters(selected_group):
-    return param_output[selected_group] if selected_group is not None else [{"label":'',"value":''}]
+    return param_output[selected_group], param_output[selected_group][0]['value']
 
 
 @app.callback(Output('tabs-content', 'children'),
