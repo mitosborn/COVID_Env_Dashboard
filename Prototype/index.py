@@ -21,9 +21,15 @@ from database import transforms
 
 app.layout = sidepanel.layout
 param_output = {'GHG':[{"label": "Greenhouse Gas - XCO2", "value": "XCO2"},
-                     {"label": "Greenhouse Gas - XCH4", "value": "XCH4"}],'AQ':[{"label": "Air Quality - NO2", "value": "NO2"},
-                     {"label": "Air Quality - PM2.5", "value": "PM2.5"}],'WQ':[{"label": "Water Quality - Dissolved Oxygen", "value": "Dissolved Oxygen"},
-                     {"label": "Water Quality - Orthophosphate", "value": "Orthophosphate"}],'ECON':[{"label": "COVID Cases", "value": "COVID Cases"}]}
+                     {"label": "Greenhouse Gas - XCH4", "value": "XCH4"}],
+                'AQ':[{"label": "Air Quality - NO2", "value": "NO2"},
+                     {"label": "Air Quality - PM2.5", "value": "PM2.5"}],
+                'WQ':[{"label": "Water Quality - Dissolved Oxygen", "value": "Dissolved Oxygen"},
+                     {"label": "Water Quality - Orthophosphate", "value": "Orthophosphate"}],
+                'ECON':[{"label": "Cumulative Cases", "value": "cumulative cases"},
+                        {"label":"Cumulative Deaths","value":"cumulative deaths"},
+                        {"label":"Cumulative Deaths per 100k","value":"cumulative deaths per 100k"},
+                        {"label":"Cumulative Cases per 100k","value":"cumulative cases per 100k"}]}
 
 
 @app.callback([Output('parameter','options'),Output('parameter','value')],[Input('sub-group','value')])
