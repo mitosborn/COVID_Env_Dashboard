@@ -22,8 +22,10 @@ from database import transforms
 app.layout = sidepanel.layout
 param_output = {'GHG':[{"label": "Greenhouse Gas - XCO2", "value": "XCO2"},
                      {"label": "Greenhouse Gas - XCH4", "value": "XCH4"}],
-                'AQ':[{"label": "Air Quality - NO2", "value": "NO2"},
-                     {"label": "Air Quality - PM2.5", "value": "PM2.5"}],
+                'AQ':[{"label": "Air Quality - NOx", "value": "NOx"},
+                     {"label": "Air Quality - PM2.5", "value": "PM2.5"},
+                      {"label": "Air Quality - CO", "value": "CO"},
+                      {"label": "Air Quality - Ozone", "value": "Ozone"}],
                 'WQ':[{"label": "Water Quality - Dissolved Oxygen", "value": "Dissolved Oxygen"},
                      {"label": "Water Quality - Orthophosphate", "value": "Orthophosphate"}],
                 'ECON':[{"label": "Cumulative Cases", "value": "cumulative cases"},

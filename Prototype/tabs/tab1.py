@@ -37,7 +37,7 @@ local_df = pd.DataFrame()
 #  html.Div([
 #         dbc.Row([dbc.Col(html.Div(html.P("A single, half-width column")),style = {'padding':'50px'})
 #                 ,dbc.Col(
-aq_units = {'Ozone':'ppm','PM2.5':'μg/m3','NO2':'ppb','CO':'ppm','NO':'ppm'}
+aq_units = {'Ozone':'ppm','PM2.5':'μg/m3','NOx':'ppb','CO':'ppm','NO':'ppm'}
 econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulative deaths per 100k":'deaths/100k',"cumulative cases per 100k":'cases/100k'}
 wq_units = {"Dissolved Oxygen":"milligrams/Liter","Orthophosphate":"milligrams/Liter"}
 ghg_units = {"XCO2":"ppm","XCH4":"ppm"}
@@ -59,6 +59,7 @@ def get_map(parameter, sub_group, option_water,date):
     else:
         local_df = df[sub_group][parameter]
         local_df = local_df[local_df['date'] == date]
+        local_df = local_df.groupby(['date','fips','county']).mean().reset_index()
     print(type(date))
     print(parameter)
     title = (lambda x,a: parameter+' ('+units[x][a]+')' if x not in 'ECON' else 'COVID '+units[x][a].capitalize())(sub_group,parameter)
@@ -97,7 +98,7 @@ def display_click_data(clickData,parameter, sub_group):
     if clickData is not None and sub_group != 'ECON':
         local_df = df[sub_group][parameter]
         fips_number = clickData["points"][0]['location']
-        fips_number = int(fips_number)
+        fips_number = str(int(fips_number))
         print(fips_number)
         print(local_df.head())
         select = local_df[local_df['fips'] == fips_number].copy().reset_index()
@@ -107,10 +108,10 @@ def display_click_data(clickData,parameter, sub_group):
         select = select.groupby(['date','fips','county']).mean().reset_index()
         select['date'] = pd.to_datetime(select['date'])
 
-        fig = px.line(select, x='date', y="value", title='Concentration of '+parameter)
+        fig = px.line(select, x='date', y="value", title='Concentration of '+parameter + ' in ' + select.loc[0,'county'] + ' County')
 
         fig.update_layout(xaxis_title='Time',
-                          yaxis_title=parameter+' Concentration (e-6 ppv)')
+                          yaxis_title=parameter+' Concentration ('+units[sub_group][parameter]+')')
 
         fig.update_traces(marker_size=20)
         fig.update_xaxes(
