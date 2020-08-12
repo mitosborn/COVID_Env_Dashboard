@@ -75,10 +75,10 @@ def get_map(parameter, sub_group, option_water,date):
                                 colorbar_title_text=title)
     fig = go.Figure(data=trace)
     title = (lambda x,a: 'Average of {} on {}'.format(a,date.strftime("%B %d, %Y")) if x not in 'ECON' else a.capitalize() + ' as of '+date.strftime("%B %d, %Y"))(sub_group,parameter)
-    fig.update_layout(title_text= title,width=750, height=900,
-                      mapbox=dict(center=dict(lat=31.3915, lon=-99.1707),
+    fig.update_layout(title_text= title,width=750, height=750,
+                      mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
                                   accesstoken=mapbox_key, style='basic',
-                                  zoom=4.5,layers=[{'sourcetype': 'geojson', 'opacity': .1,
+                                  zoom=4.75,layers=[{'sourcetype': 'geojson', 'opacity': .1,
                                            'source': counties, 'type': "fill", 'color': None}]
                                   ))
     # add aquifer polygons
@@ -93,8 +93,8 @@ def get_map(parameter, sub_group, option_water,date):
                                                'source': watershed, 'type': "line", 'color': "royalblue"}]))
     return fig
 
-@app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value')])
-def display_click_data(clickData,parameter, sub_group):
+@app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value')])
+def display_click_data(clickData,parameter, sub_group,show_lines):
     if clickData is not None and sub_group != 'ECON':
         local_df = df[sub_group][parameter]
         fips_number = clickData["points"][0]['location']
@@ -126,9 +126,41 @@ def display_click_data(clickData,parameter, sub_group):
                 ])
             )
         )
+        fig.layout.yaxis.update(range=[min(select['value']), max(select['value'])])
+
+        if show_lines:
+            opening = 'State<br>Opening'
+            closure = "State<br>Closure"
+            fig.add_trace(go.Scatter(
+                x=["2020-05-05","2020-05-05"],
+                y=[min(select['value']),max(select['value'])],
+                name=opening,
+                mode = 'lines',
+                line_color = '#51E10E'
+            ))
+            fig.add_trace(go.Scatter(
+                x=["2020-04-02", "2020-04-02"],
+                y=[min(select['value']), max(select['value'])],
+                name=closure,
+                mode='lines',
+                line_color='#ED0925'
+            ))
+
         return fig
     elif sub_group == 'ECON':
         print(clickData)
         print('here')
         return px.bar(df[sub_group]['Econ_Clean'],x = 'county', y = parameter)
-    return px.line()
+    else:
+        text = "Click on a county to see trends"
+        fig = px.line()
+        fig.add_annotation(
+            x=0.5,
+            y=0.5,
+            text=text,
+            xref="paper",
+            yref="paper",
+            showarrow=False,
+            font_size=20
+        )
+    return fig
