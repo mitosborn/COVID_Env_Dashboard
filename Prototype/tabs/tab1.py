@@ -5,6 +5,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc 
 import dash_table
 import pandas as pd
+from datetime import datetime
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from app import app 
@@ -32,7 +33,6 @@ with open('river_basin.json') as f:
     riverbasin = geojson.load(f)
 with open('watershed.json') as f:
     watershed = geojson.load(f)
-local_df = pd.DataFrame()
 
 #  html.Div([
 #         dbc.Row([dbc.Col(html.Div(html.P("A single, half-width column")),style = {'padding':'50px'})
@@ -93,23 +93,58 @@ def get_map(parameter, sub_group, option_water,date):
                                                'source': watershed, 'type': "line", 'color': "royalblue"}]))
     return fig
 
-@app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value')])
-def display_click_data(clickData,parameter, sub_group,show_lines):
+
+@app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value'),Input('years','value'),
+                                        Input('avg_type','value')])
+def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type):
     if clickData is not None and sub_group != 'ECON':
+        years.append(2020)
         local_df = df[sub_group][parameter]
         fips_number = clickData["points"][0]['location']
         fips_number = str(int(fips_number))
         print(fips_number)
         print(local_df.head())
         select = local_df[local_df['fips'] == fips_number].copy().reset_index()
-        select['Time'] = pd.to_datetime(select['date'])
-        print(select)
-        print(select.head())
-        select = select.groupby(['date','fips','county']).mean().reset_index()
         select['date'] = pd.to_datetime(select['date'])
+        ### Aggregate Data by county
+        select = select.groupby(['date', 'fips', 'county']).mean().reset_index()
+        dataframes = {}
+        for year in years:
+            if year == 'avg':
+                dataframe = select[select['date'].dt.year.isin([2015,2016,2017,2018,2019])].copy()
+                dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2020))
+                dataframe = dataframe.groupby(['date','fips','county']).mean().reset_index()
+            else:
+                dataframe = select[select['date'].dt.year == year].copy()
+                dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2020))
 
-        fig = px.line(select, x='date', y="value", title='Concentration of '+parameter + ' in ' + select.loc[0,'county'] + ' County')
+            if avg_type == 'weekly':
+                dataframe = dataframe.groupby(['county', 'fips']).apply(
+                        lambda x: x.resample('7D', on='date').mean()).reset_index()
+            elif avg_type == 'monthly':
+                dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(day = 1))
+                dataframe = dataframe.groupby(['date','county','fips']).mean().reset_index()
+                print(dataframe)
+            elif avg_type == 'rolling':
+                dataframe = dataframe.pivot_table(index = 'date',columns = ['county','fips'],values = 'value')
+                dataframe = dataframe.rolling(window = 14).mean()
+                dataframe = dataframe.stack(level = [0,1]).reset_index(name = 'value')
 
+            dataframes[year] = dataframe
+        ##### Averaging interval
+        print(years)
+        print(dataframes)
+        fig = px.line(title='Concentration of '+parameter + ' in ' + select.loc[0,'county'] + ' County',labels = {'date':'Date'})
+        label_style = {2020:{'label':'2020','color':'#0921ED'},
+                       2019:{'label':'2019','color':'#ED0925'}, 2018:{'label':'2018','color':'#09ED10'},2017:{'label':'2017','color':'#ED09ED'},2016:{'label':'2016','color':'#F6F79D'},2015:{'label':'2015','color':'#7EF3E5'},'avg':{'label':'Avg 2015-2019','color':'#94B8D5'}}
+        for year, frame in dataframes.items():
+            fig.add_trace(go.Scatter(
+                x=frame['date'],
+                y=frame['value'],
+                name=label_style[year]['label'],
+                mode='lines',
+                line_color=label_style[year]['color']
+                ))
         fig.update_layout(xaxis_title='Time',
                           yaxis_title=parameter+' Concentration ('+units[sub_group][parameter]+')')
 
@@ -133,7 +168,7 @@ def display_click_data(clickData,parameter, sub_group,show_lines):
             closure = "State<br>Closure"
             fig.add_trace(go.Scatter(
                 x=["2020-05-05","2020-05-05"],
-                y=[min(select['value']),max(select['value'])],
+                y=[min(select['value']), max(select['value'])],
                 name=opening,
                 mode = 'lines',
                 line_color = '#51E10E'

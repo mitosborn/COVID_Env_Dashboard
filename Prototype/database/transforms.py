@@ -24,20 +24,6 @@ def get_data(file_dir, data_folder_name):
             print("Has no date col")
         data[parameter] = dataframe
 
-    if(data_folder_name == 'AQ'):
-        ### Combine NO and NO2 dfs
-        intersection = set(zip(data['NO']['site id'], data['NO']['county'])).intersection(
-            set(zip(data['NO2']['site id'], data['NO2']['county'])))
-        NOx = []
-        for param in ['NO', 'NO2']:
-            [NOx.append(row[1].to_dict()) for row in data[param].iterrows() if
-             (row[1]['site id'], row[1]['county']) in intersection]
-        NOx = pd.DataFrame(NOx)
-        NOx = NOx.groupby(['date', 'site id', 'county','fips']).sum().reset_index()
-        data['NOx'] = NOx
-        data.pop('NO')
-        data.pop('NO2')
-        print(NOx)
     return data
 
 # Method to form master dictionary that contains all data from the sub-groups.
