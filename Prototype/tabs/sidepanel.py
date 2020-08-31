@@ -20,12 +20,12 @@ layout = html.Div([
     html.H1('COVID Dashboard')
     ,dbc.Row([dbc.Col(
         html.Div([
-         html.H2('Filters'),html.H3('Select a group'), dcc.Dropdown(
+         html.H2('Filters'),html.H3('Select group'), dcc.Dropdown(
                        id='sub-group',
                          options = [{'label':i,'value':selection[i]} for i in selection.keys()],
                          searchable = False, clearable = False, placeholder = 'Select a group',value ='AQ'),
-        html.Div([html.H3('Select Parameter(s)'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NO2", "value": "NO2"}],clearable = False,value = 'NO2')
-                   ]), html.Div([html.H3('Select Layers'),dbc.RadioItems(id = 'wtr_layer',options=[
+        html.Div([html.H3('Select Parameter'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NO2", "value": "NO2"}],clearable = False,value = 'NO2')
+                   ]), html.Div([html.H3('Layers',id = 'water_title'),dbc.RadioItems(id = 'wtr_layer',options=[
                 {'label':'None','value':'None'},
                 {'label': 'Major Aquifers', 'value': 'Major Aquifers'},
                 {'label': 'River Basins', 'value': 'River Basins'},

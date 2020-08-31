@@ -20,23 +20,24 @@ from tabs import sidepanel, tab1, tab2
 from database import transforms
 
 app.layout = sidepanel.layout
-param_output = {'GHG':[{"label": "Greenhouse Gas - XCO2", "value": "XCO2"},
-                     {"label": "Greenhouse Gas - XCH4", "value": "XCH4"}],
-                'AQ':[{"label": "Air Quality - NOx", "value": "NOx"},
-                     {"label": "Air Quality - PM2.5", "value": "PM2.5"},
-                      {"label": "Air Quality - CO", "value": "CO"},
-                      {"label": "Air Quality - Ozone", "value": "Ozone"}],
-                'WQ':[{"label": "Water Quality - Dissolved Oxygen", "value": "Dissolved Oxygen"},
-                     {"label": "Water Quality - Orthophosphate", "value": "Orthophosphate"}],
+param_output = {'GHG':[{"label": "XCO2", "value": "XCO2"},
+                     {"label": "XCH4", "value": "XCH4"}],
+                'AQ':[{"label": "NOx", "value": "NOx"},
+                     {"label": "PM2.5", "value": "PM2.5"},
+                      {"label": "CO", "value": "CO"},
+                      {"label": "Ozone", "value": "Ozone"}],
+                'WQ':[{"label": "Dissolved Oxygen", "value": "Dissolved Oxygen"},
+                     {"label": "Orthophosphate", "value": "Orthophosphate"}],
                 'ECON':[{"label": "Cumulative Cases", "value": "cumulative cases"},
                         {"label":"Cumulative Deaths","value":"cumulative deaths"},
                         {"label":"Cumulative Deaths per 100k","value":"cumulative deaths per 100k"},
                         {"label":"Cumulative Cases per 100k","value":"cumulative cases per 100k"}]}
-
-
-@app.callback([Output('parameter','options'),Output('parameter','value')],[Input('sub-group','value')])
+show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
+#Function that updates the parameters shown. If the selected group is not water, hides the layer tab.
+#Additionally, the function always sets layers to none to prevent layers showing after water is deselected.
+@app.callback([Output('parameter','options'),Output('parameter','value'),Output('water_title','style'),Output('wtr_layer','style'),Output('wtr_layer','value')],[Input('sub-group','value')])
 def return_parameters(selected_group):
-    return param_output[selected_group], param_output[selected_group][0]['value']
+    return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None'
 
 
 @app.callback(Output('tabs-content', 'children'),
