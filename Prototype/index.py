@@ -39,6 +39,15 @@ show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
 def return_parameters(selected_group):
     return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None'
 
+@app.callback(Output('date_range','marks'),[Input('date_interval','value'),Input('parameter','value'),Input('sub-group','value')])
+def return_timeline(interval, group, parameter):
+    print(interval,group,parameter)
+    return {
+        0: {'label': '0 °C', 'style': {'color': '#77b0b1'}},
+        26: {'label': '26 °C'},
+        37: {'label': '37 °C'},
+        100: {'label': '100 °C', 'style': {'color': '#f50'}}
+    }
 
 @app.callback(Output('tabs-content', 'children'),
               [Input('tabs', 'value')])
