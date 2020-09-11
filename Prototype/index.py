@@ -18,7 +18,7 @@ import pandas as pd
 from app import app
 from tabs import sidepanel, tab1, tab2
 from database import transforms
-
+df = transforms.master_df
 app.layout = sidepanel.layout
 param_output = {'GHG':[{"label": "XCO2", "value": "XCO2"},
                      {"label": "XCH4", "value": "XCH4"}],
@@ -39,15 +39,22 @@ show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
 def return_parameters(selected_group):
     return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None'
 
-@app.callback(Output('date_range','marks'),[Input('date_interval','value'),Input('parameter','value'),Input('sub-group','value')])
-def return_timeline(interval, group, parameter):
+@app.callback([Output('date_range','marks'),Output('date_range','max'),Output('date_range','style'),Output('date_title','style'),Output('date_range','value')],[Input('date_interval','value'),Input('parameter','value'),Input('sub-group','value')])
+def return_timeline(interval, parameter, group):
     print(interval,group,parameter)
+    if interval == 'monthly':
+        print(group, parameter)
+        local_df = df[group][parameter]
+        local_df = local_df[local_df['date'].dt.year == 2020]
+        months = set(local_df['date'].dt.month)
+        to_return = {val:{'label':str(val)} for val in months}
+        return to_return, max(months), {'display':'block'}, {'display':'block'},1
     return {
         0: {'label': '0 °C', 'style': {'color': '#77b0b1'}},
         26: {'label': '26 °C'},
         37: {'label': '37 °C'},
         100: {'label': '100 °C', 'style': {'color': '#f50'}}
-    }
+    }, 150, {'display':'none'}, {'display':'none'}
 
 @app.callback(Output('tabs-content', 'children'),
               [Input('tabs', 'value')])

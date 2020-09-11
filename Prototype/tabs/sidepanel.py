@@ -35,7 +35,7 @@ layout = html.Div([
 
             ],
         value='None')]),html.Div([html.H3("Comparison Year"),dcc.Dropdown(id = 'comp_year',options = years,searchable = False,clearable = False, value='avg')]),html.Div([html.H3('Interval'),dbc.RadioItems(id = 'date_interval',options = [
-                                                                                       {'label':'Monthly','value':'monthly'},{'label':'Annual','value':'annual'}],value = 'monthly')]),html.Div([html.H3('Select Date'),dcc.Slider(id = 'date_range',min = 0, max = 100),dcc.DatePickerSingle(
+                                                                                       {'label':'Monthly','value':'monthly'},{'label':'Annual','value':'annual'}],value = 'monthly')]),html.Div([html.H3('Select Month', id = 'date_title'),dcc.Slider(id = 'date_range',min = 1, max = 12),dcc.DatePickerSingle(
         id='date',
         min_date_allowed=datetime.datetime(2020, 1, 1),
         max_date_allowed=datetime.datetime(2020, 7, 10),
