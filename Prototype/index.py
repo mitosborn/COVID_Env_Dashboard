@@ -46,23 +46,25 @@ def return_timeline(interval, parameter, group):
         print(group, parameter)
         local_df = df[group][parameter]
         local_df = local_df[local_df['date'].dt.year == 2020]
-        months = set(local_df['date'].dt.month)
-        to_return = {val:{'label':str(val)} for val in months}
-        return to_return, max(months), {'display':'block'}, {'display':'block'},1
+        months = set(local_df['date'])
+        max_month = list(map(lambda x: x.month,months))
+        to_return = {val.month:{'label':val.strftime("%b")} for val in months}
+        print(to_return)
+        return to_return, max(max_month), {'display':'block'}, {'display':'block'}, 1
     return {
         0: {'label': '0 °C', 'style': {'color': '#77b0b1'}},
         26: {'label': '26 °C'},
         37: {'label': '37 °C'},
         100: {'label': '100 °C', 'style': {'color': '#f50'}}
-    }, 150, {'display':'none'}, {'display':'none'}
+    }, 150, {'display':'none'}, {'display':'none'}, 1
 
 @app.callback(Output('tabs-content', 'children'),
               [Input('tabs', 'value')])
 def render_content(tab):
     if tab == 'tab-1':
         return tab1.layout
-    elif tab == 'tab-2':
-        return tab2.layout
+    # elif tab == 'tab-2':
+    #     return tab2.layout
 # @app.callback(Output('',''),[Input('sub-group','value'),Input('parameter','value')])
 # def update_graph(group, parameter, map_type):
 #     pass
