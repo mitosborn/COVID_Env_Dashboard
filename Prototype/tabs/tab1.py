@@ -44,53 +44,60 @@ ghg_units = {"XCO2":"ppm","XCH4":"ppm"}
 units = {"AQ":aq_units,"ECON":econ_units,"WQ":wq_units,"GHG":ghg_units}
 layout = html.Div(dcc.Graph(id= 'cty_map'))
 
-@app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')])
-def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month):
-    print(df[sub_group].keys())
-    print(comp_year)
-    if comp_year == 'avg':
-        year = 2000
+@app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')
+                                          ,Input('mode','value')])
+def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,take_diff):
+    # print(df[sub_group].keys())
+    # print(comp_year)
+    print(type(take_diff))
+    print(take_diff)
+    if sub_group == 'ECON':
+        date = dt.now()
+        local_df = df[sub_group]['Econ_Clean'].loc[:,['fips',parameter,'county']].copy()
+        local_df.rename(columns = {parameter:'value'},inplace = True)
+        local_df['fips'] = local_df['fips'].astype(int)
+        print(local_df)
     else:
-        year = comp_year
-    # if sub_group == 'ECON':
-    #     date = dt.now()
-    #     local_df = df[sub_group]['Econ_Clean'].loc[:,['fips',parameter,'county']].copy()
-    #     local_df.rename(columns = {parameter:'value'},inplace = True)
-    #     local_df['fips'] = local_df['fips'].astype(int)
-    #     print(local_df)
-    # else:
+        if comp_year == 'avg':
+            year = 2000
+        else:
+            year = comp_year
 
-    local_df = df[sub_group][parameter].copy()
-    #Create 2015-2019 df
-    if year == 2000:
-        dataframe = local_df[local_df['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
-        dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
-        dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
-        local_df = local_df.append(dataframe)
+        local_df = df[sub_group][parameter].copy()
 
-    current = local_df[local_df['date'].dt.year == 2020].copy()
-    current['month'] = current['date'].dt.month
-    current = current.loc[:,['fips','county','month','value']].groupby(['fips','county','month']).mean().reset_index()
-    past = local_df[local_df['date'].dt.year == year].copy()
-    past['month'] = past['date'].dt.month
-    past = past.loc[:,['fips','county','month','value']].groupby(['fips','county','month']).mean().reset_index()
+        current = local_df[local_df['date'].dt.year == 2020].copy()
+        current['month'] = current['date'].dt.month
+        current = current.loc[:,['fips','county','month','value']].groupby(['fips','county','month']).mean().reset_index()
+        if take_diff:
+            # Create 2015-2019 df
+            if year == 2000:
+                dataframe = local_df[local_df['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
+                dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
+                dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
+                local_df = local_df.append(dataframe)
+
+            past = local_df[local_df['date'].dt.year == year].copy()
+            past['month'] = past['date'].dt.month
+            past = past.loc[:,['fips','county','month','value']].groupby(['fips','county','month']).mean().reset_index()
+            merged = current.merge(past, how='left', on=['fips', 'county', 'month'], suffixes=['_current', '_past'])
+            merged = merged.interpolate()
+            print(past)
+        else:
+            merged = current
+
+        print(current)
+        print("Space")
 
 
-    print(current)
-    print("Space")
-    print(past)
-    
 
 
-    merged = current.merge(past,how = 'left', on = ['fips','county','month'],suffixes = ['_current','_past'])
-    merged = merged.interpolate()
-    if comp_type == 'annual':
-        merged = merged.groupby(['fips','county']).mean().reset_index()
-    else:
-        merged = merged[merged['month'] == comp_month]
-    merged['value'] = merged['value_current'] - merged['value_past']
-
-    local_df = merged
+        if comp_type == 'annual':
+            merged = merged.groupby(['fips','county']).mean().reset_index()
+        else:
+            merged = merged[merged['month'] == comp_month]
+        if take_diff:
+            merged['value'] = merged['value_current'] - merged['value_past']
+        local_df = merged
 
     title = (lambda x,a: parameter+' ('+units[x][a]+')' if x not in 'ECON' else 'COVID '+units[x][a].capitalize())(sub_group,parameter)
     trace = go.Choroplethmapbox(geojson=counties,
@@ -105,6 +112,8 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month):
                                 colorbar_title_text=title)
     fig = go.Figure(data=trace)
     #title = (lambda x,a: 'Average of {} on {}'.format(a,date.strftime("%B %d, %Y")) if x not in 'ECON' else a.capitalize() + ' as of '+date.strftime("%B %d, %Y"))(sub_group,parameter)
+
+
     title = (lambda x,a: 'Average of {} on {}'.format(a,str(year)) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
     fig.update_layout(title_text= title,width=750, height=750,
                       mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
