@@ -20,8 +20,8 @@ from tabs import sidepanel, tab1, tab2
 from database import transforms
 df = transforms.master_df
 app.layout = sidepanel.layout
-param_output = {'GHG':[{"label": "XCO2", "value": "XCO2"},
-                     {"label": "XCH4", "value": "XCH4"}],
+param_output = {'GHG':[{"label": "CO2", "value": "XCO2"},
+                     {"label": "CH4", "value": "XCH4"}],
                 'AQ':[{"label": "NOx", "value": "NOx"},
                      {"label": "PM2.5", "value": "PM2.5"},
                       {"label": "CO", "value": "CO"},
@@ -39,16 +39,22 @@ show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
 def return_parameters(selected_group):
     return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None'
 
-@app.callback([Output('date_range','marks'),Output('date_range','max'),Output('date_range','style'),Output('date_title','style'),Output('date_range','value')],[Input('date_interval','value'),Input('parameter','value'),Input('sub-group','value')])
-def return_timeline(interval, parameter, group):
+@app.callback([Output('date_range','marks'),Output('date_range','max'),Output('date_range','style'),Output('date_title','style'),Output('date_range','value')],[Input('date_interval','value'),Input('parameter','value'),Input('sub-group','value'),Input('mode','value'),Input('comp_year','value')])
+def return_timeline(interval, parameter, group,compare_mode, year_selected):
     print(interval,group,parameter)
+    base_year = 2020
+    if len(compare_mode) == 0:
+        if year_selected == 'avg':
+            base_year = 2000
+        else:
+            base_year = year_selected
     if interval == 'monthly':
         print(group, parameter)
         local_df = df[group][parameter]
-        local_df = local_df[local_df['date'].dt.year == 2020]
+        local_df = local_df[local_df['date'].dt.year == base_year]
         months = set(local_df['date'])
         max_month = list(map(lambda x: x.month,months))
-        to_return = {val.month:{'label':val.strftime("%b")} for val in months}
+        to_return = {val.month:{'label':val.strftime("%b"),'style': {"transform": "rotate(45deg)"}} for val in months}
         print(to_return)
         return to_return, max(max_month), {'display':'block'}, {'display':'block'}, 1
     return {
@@ -63,12 +69,17 @@ def return_timeline(interval, parameter, group):
 def render_content(tab):
     if tab == 'tab-1':
         return tab1.layout
-    # elif tab == 'tab-2':
-    #     return tab2.layout
-# @app.callback(Output('',''),[Input('sub-group','value'),Input('parameter','value')])
-# def update_graph(group, parameter, map_type):
-#     pass
 
+
+@app.callback([Output('comp_year','options'),Output('mode_title','children')],[Input('mode','value')])
+def update_comp_chart(compare_mode):
+    #Because the value is outputted in a list, set its value as the first element
+    if len(compare_mode) > 0:
+        return [{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017},
+                 {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},
+                 {'label': '2015-2019 Average', 'value': 'avg'}], html.H3("Comparison Year")
+    return ([{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017}, {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},{'label': '2015-2019 Average', 'value': 'avg'},{'label': '2020', 'value': 2020}],
+            html.H3("Viewing Year"))
 
 
 

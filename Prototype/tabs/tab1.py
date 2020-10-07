@@ -17,6 +17,7 @@ import re
 import geojson
 import plotly.express as px
 import os
+import calendar
 df = transforms.master_df
 
 PAGE_SIZE = 50
@@ -62,20 +63,21 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
             year = 2000
         else:
             year = comp_year
-
         local_df = df[sub_group][parameter].copy()
 
-        current = local_df[local_df['date'].dt.year == 2020].copy()
-        current['month'] = current['date'].dt.month
-        current = current.loc[:,['fips','county','month','value']].groupby(['fips','county','month']).mean().reset_index()
-        if take_diff:
-            # Create 2015-2019 df
-            if year == 2000:
-                dataframe = local_df[local_df['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
-                dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
-                dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
-                local_df = local_df.append(dataframe)
+        # Create 2015-2019 df
+        if year == 2000:
+            dataframe = local_df[local_df['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
+            dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
+            dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
+            local_df = local_df.append(dataframe)
 
+
+
+        if take_diff:
+            current = local_df[local_df['date'].dt.year == 2020].copy()
+            current['month'] = current['date'].dt.month
+            current = current.loc[:, ['fips', 'county', 'month', 'value']].groupby(['fips', 'county', 'month']).mean().reset_index()
             past = local_df[local_df['date'].dt.year == year].copy()
             past['month'] = past['date'].dt.month
             past = past.loc[:,['fips','county','month','value']].groupby(['fips','county','month']).mean().reset_index()
@@ -83,12 +85,23 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
             merged = merged.interpolate()
             print(past)
         else:
+            current = local_df[local_df['date'].dt.year == year].copy()
+            current['month'] = current['date'].dt.month
+            current = current.loc[:, ['fips', 'county', 'month', 'value']].groupby(
+                ['fips', 'county', 'month']).mean().reset_index()
             merged = current
 
         print(current)
         print("Space")
 
-
+        """
+        Steps:
+        # 1. Implement functionality of difference button
+        #    - UI should swap out "comparison year" with "selected year" -> This will be a value switch
+        #    - UI should swap out contents of year selector by adding in 2020
+        #    - This can be accomplished in one method
+          2. 
+        """
 
 
         if comp_type == 'annual':
@@ -111,10 +124,24 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                                               '<br> <b>Value </b>: %{z}<br>' + '<extra></extra>',
                                 colorbar_title_text=title)
     fig = go.Figure(data=trace)
-    #title = (lambda x,a: 'Average of {} on {}'.format(a,date.strftime("%B %d, %Y")) if x not in 'ECON' else a.capitalize() + ' as of '+date.strftime("%B %d, %Y"))(sub_group,parameter)
+    if year == 2000:
+        comp_year = "2015-2019 Average"
+    comp_year = str(comp_year)
+    comp_month = calendar.month_name[comp_month]
+    #Make title
+    if take_diff:
+        if comp_type == 'annual':
+            title = (lambda x,a: 'Annual Difference of {} between {} and 2020'.format(a,comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
+        else:
+            title = (lambda x,a: 'Annual Difference of {} between {} {} and {} 2020'.format(a,comp_month,comp_year,comp_month) if x not in 'ECON' else a.capitalize() + ' as of '+date.strftime("%B %d, %Y"))(sub_group,parameter)
+
+    else:
+        if comp_type == 'annual':
+            title = (lambda x, a: 'Annual Average of {} in {}'.format(a, str(year)) if x not in 'ECON' else a.capitalize() + ' as of ' + str(year))(sub_group, parameter)
+        else:
+            title = (lambda x,a: 'Annual Average of {} in {} {}'.format(a,comp_month, comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
 
 
-    title = (lambda x,a: 'Average of {} on {}'.format(a,str(year)) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
     fig.update_layout(title_text= title,width=750, height=750,
                       mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
                                   accesstoken=mapbox_key, style='basic',
