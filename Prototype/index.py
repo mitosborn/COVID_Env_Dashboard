@@ -9,7 +9,6 @@ import dash_bootstrap_components as dbc
 from app import app
 from tabs import sidepanel, tab1, tab2
 from database import transforms
-import sqlite3
 import dash
 from dash.dependencies import Input, Output
 import dash_table
@@ -28,16 +27,15 @@ param_output = {'GHG':[{"label": "CO2", "value": "XCO2"},
                       {"label": "Ozone", "value": "Ozone"}],
                 'WQ':[{"label": "Dissolved Oxygen", "value": "Dissolved Oxygen"},
                      {"label": "Orthophosphate", "value": "Orthophosphate"}],
-                'ECON':[{"label": "Cumulative Cases", "value": "cumulative cases"},
-                        {"label":"Cumulative Deaths","value":"cumulative deaths"},
-                        {"label":"Cumulative Deaths per 100k","value":"cumulative deaths per 100k"},
-                        {"label":"Cumulative Cases per 100k","value":"cumulative cases per 100k"}]}
+                'ECON':[{"label": "Race vs COVID Deaths", "value": "race"},
+                        {"label":"PM2.5 vs COVID Deaths","value":"pm2.5"}]}
 show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
+show_econ = lambda x: {'display':'none'} if x == 'ECON' else {'display':'block'}
 #Function that updates the parameters shown. If the selected group is not water, hides the layer tab.
 #Additionally, the function always sets layers to none to prevent layers showing after water is deselected.
-@app.callback([Output('parameter','options'),Output('parameter','value'),Output('water_title','style'),Output('wtr_layer','style'),Output('wtr_layer','value')],[Input('sub-group','value')])
+@app.callback([Output('parameter','options'),Output('parameter','value'),Output('water_title','style'),Output('wtr_layer','style'),Output('wtr_layer','value'),Output('econ_mode','style')],[Input('sub-group','value')])
 def return_parameters(selected_group):
-    return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None'
+    return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None', show_econ(selected_group)
 
 @app.callback([Output('date_range','marks'),Output('date_range','max'),Output('date_range','style'),Output('date_title','style'),Output('date_range','value')],[Input('date_interval','value'),Input('parameter','value'),Input('sub-group','value'),Input('mode','value'),Input('comp_year','value')])
 def return_timeline(interval, parameter, group,compare_mode, year_selected):
@@ -80,7 +78,6 @@ def update_comp_chart(compare_mode):
                  {'label': '2015-2019 Average', 'value': 'avg'}], html.H3("Comparison Year")
     return ([{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017}, {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},{'label': '2015-2019 Average', 'value': 'avg'},{'label': '2020', 'value': 2020}],
             html.H3("Viewing Year"))
-
 
 
 if __name__ == '__main__':

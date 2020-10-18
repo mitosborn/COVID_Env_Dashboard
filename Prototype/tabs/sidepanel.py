@@ -53,7 +53,7 @@ layout = html.Div([navbar,dbc.Row([dbc.Col(
                        id='sub-group',
                          options = [{'label':i,'value':selection[i]} for i in selection.keys()],
                          searchable = False, clearable = False, placeholder = 'Select a group',value ='AQ'),
-        html.Div([html.H3('Select Parameter'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NO2", "value": "NO2"}],clearable = False,value = 'NO2')
+        html.Div([html.H3('Select Parameter'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NOx", "value": "NOx"}],clearable = False,value = 'NOx')
                    ]), html.Div([html.H3('Layers',id = 'water_title'),dbc.RadioItems(id = 'wtr_layer',options=[
                 {'label':'None','value':'None'},
                 {'label': 'Major Aquifers', 'value': 'Major Aquifers'},
@@ -61,11 +61,11 @@ layout = html.Div([navbar,dbc.Row([dbc.Col(
                 {'label': 'Watersheds', 'value': 'Watersheds'}
 
             ],
-        value='None')]),html.Div([html.H3("Mode"),dbc.Checklist(id = 'mode',options = [
+        value='None')]),html.Div([html.Div([html.H3("Mode"),dbc.Checklist(id = 'mode',options = [
                                                                                        {'label':'Take difference between 2020 and other years','value':True}],value = [True],inline = True,switch=True)]),html.Div(id = 'mode_title'),html.Div(dcc.Dropdown(id = 'comp_year',options = years,searchable = False,clearable = False, value='avg')),html.Div([html.H3('Interval'),dbc.RadioItems(id = 'date_interval',options = [
                                                                                        {'label':'Monthly','value':'monthly'},{'label':'Annual','value':'annual'}],value = 'monthly')]),html.Div([html.H3('Select Month', id = 'date_title'),dcc.Slider(id = 'date_range',min = 1, max = 12)
 
-                                                                                                                                                                                                 ])], style={'marginBottom': 50, 'marginTop': 25, 'marginLeft':15, 'marginRight':15}), width=2)
+                                                                                                                                                                                                 ])],id = "econ_mode")], style={'marginBottom': 50, 'marginTop': 25, 'marginLeft':15, 'marginRight':15}), width=2)
 
     ,dbc.Col(html.Div([
             tab1.layout]), width=5), dbc.Col(html.Div([dcc.Graph(id = 'model'),

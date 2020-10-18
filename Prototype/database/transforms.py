@@ -2,7 +2,8 @@ import pandas as pd
 from os import listdir
 from os.path import isfile, join
 import os
-
+from urllib.request import urlopen
+import json
 # Method to read in all dataframes in a single file and return 
 # a dictionary containing all of them where the key is the parameter
 # and the value is the dataframe
@@ -23,7 +24,17 @@ def get_data(file_dir, data_folder_name):
         except:
             print("Has no date col")
         data[parameter] = dataframe
-
+    if(data_folder_name == 'ECON'):
+        print("Got here")
+        #Read in Econ county point level data
+        data['county_centers']['name'] = data['county_centers']['name'].str.replace(' County', '')
+        data['county_centers'].drop(['usps', 'ansicode'], axis=1, inplace=True)
+        data['econ_data'] = data['econ_data'].merge(data['county_centers'],how = 'left',left_on = 'county',right_on = 'name')
+        #Read in ECON geojson
+        with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+            counties = json.load(response)
+            data['json'] = counties
+        data['econ_data'].columns = [col.strip() for col in data['econ_data'].columns]
     return data
 
 # Method to form master dictionary that contains all data from the sub-groups.

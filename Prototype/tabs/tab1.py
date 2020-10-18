@@ -53,16 +53,90 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
     print(type(take_diff))
     print(take_diff)
     if sub_group == 'ECON':
-        date = dt.now()
-        local_df = df[sub_group]['Econ_Clean'].loc[:,['fips',parameter,'county']].copy()
-        local_df.rename(columns = {parameter:'value'},inplace = True)
-        local_df['fips'] = local_df['fips'].astype(int)
-        print(local_df)
+        local_df = df['ECON']['econ_data']
+        print(local_df.columns)
+        fig = go.Figure()
+        if parameter == 'pm2.5':
+            trace = go.Choroplethmapbox(geojson=df['ECON']['json'],
+                                        locations=local_df['fips'],
+                                        z=local_df['pm2.5'],
+                                        colorscale='oranges',
+                                        colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
+                                        marker_line_color='white', name='pm 2.5 mg/m3',
+                                        colorbar_title='pm 2.5 (mg/m<sup>3</sup>)', colorbar_titlefont=dict(size=11),
+                                        colorbar_tickfont=dict(size=11))
+
+            trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
+                                      marker=go.scattermapbox.Marker(symbol='circle', size=2 * local_df[
+                                          'cases/100k'],
+                                                                     sizemode='area', opacity=0.4, color='gray'),
+                                      name='Cases per 100k Population')
+
+            trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
+                                      marker=go.scattermapbox.Marker(symbol='circle', size=20 * local_df[
+                                          'deaths/100k'],
+                                                                     sizemode='area', opacity=0.4, color='royalblue'),
+                                      name='Deaths per 100k Population')
+
+            fig.add_trace(trace2)
+            fig.add_trace(trace)
+            fig.add_trace(trace3)
+
+            fig.update_layout(showlegend=True, title_text='County Average PM 2.5 and COVID Cases',
+                              title_x=0.5, title_y=0.94, width=750, height=750, legend=dict(font=dict(size=11),
+                                                                                            yanchor='bottom',
+                                                                                            xanchor='right',
+                                                                                            y=1, x=1, orientation='h'),
+                              mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
+                                          accesstoken=mapbox_key, style="streets",
+                                          zoom=5.75))
+        #Comparing race vs Cases/Deaths
+        else:
+            trace = go.Choroplethmapbox(geojson=df['ECON']['json'],
+                                        locations=local_df['fips'],
+                                        z=local_df['bah'],
+                                        colorscale='speed',
+                                        colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
+                                        marker_line_color='white', name='Black and Hispanic %',
+                                        colorbar_title='Percentage', colorbar_titlefont=dict(size=11),
+                                        colorbar_tickfont=dict(size=11))
+
+            trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
+                                      marker=go.scattermapbox.Marker(symbol='circle', size=2 * local_df[
+                                          'cases/100k'],
+                                                                     sizemode='area', opacity=0.4, color='gray'),
+                                      name='Cases per 100k Population')
+
+            trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
+                                      marker=go.scattermapbox.Marker(symbol='circle', size=20 * local_df[
+                                          'deaths/100k'],
+                                                                     sizemode='area', opacity=0.4, color='royalblue'),
+                                      name='Deaths per 100k Population')
+
+            fig.add_trace(trace2)
+            fig.add_trace(trace)
+            fig.add_trace(trace3)
+
+            fig.update_layout(showlegend=True, title_text= 'Black American & Hispanic Percentage of COVID Cases/Deaths',
+                               title_x=0.5, title_y=0.94,width=750, height=750, legend=dict(font=dict(size=11),
+                                                                                            yanchor='bottom',
+                                                                                            xanchor='right',
+                                                                                            y=1, x=1, orientation='h'),
+                              mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
+                                          accesstoken=mapbox_key, style="streets",
+                                          zoom=5.75))
+        return fig
+
+
+
     else:
         if comp_year == 'avg':
             year = 2000
         else:
             year = comp_year
+        print("HERSERERSRE")
+        print(parameter)
+        print(sub_group)
         local_df = df[sub_group][parameter].copy()
 
         # Create 2015-2019 df
@@ -123,6 +197,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                                 hovertemplate='<b>County</b>: <b>%{text}</b>' +
                                               '<br> <b>Value </b>: %{z}<br>' + '<extra></extra>',
                                 colorbar_title_text=title)
+    print("Got here")
     fig = go.Figure(data=trace)
     if year == 2000:
         comp_year = "2015-2019 Average"
@@ -144,7 +219,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
 
     fig.update_layout(title_text= title,width=750, height=750,
                       mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
-                                  accesstoken=mapbox_key, style='basic',
+                                  accesstoken=mapbox_key, style='streets',
                                   zoom=4.75,layers=[{'sourcetype': 'geojson', 'opacity': .1,
                                            'source': counties, 'type': "fill", 'color': None}]
                                   ))
