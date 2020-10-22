@@ -95,7 +95,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
             trace = go.Choroplethmapbox(geojson=df['ECON']['json'],
                                         locations=local_df['fips'],
                                         z=local_df['bah'],
-                                        colorscale='speed',
+                                        colorscale='oranges',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
                                         marker_line_color='white', name='Black and Hispanic %',
                                         colorbar_title='Percentage', colorbar_titlefont=dict(size=11),
@@ -117,7 +117,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
             fig.add_trace(trace)
             fig.add_trace(trace3)
 
-            fig.update_layout(showlegend=True, title_text= 'Black American & Hispanic Percentage of COVID Cases/Deaths',
+            fig.update_layout(showlegend=True, title_text= 'Black & Hispanic American Percentage of COVID Cases/Deaths',
                                title_x=0.5, title_y=0.94,width=750, height=750, legend=dict(font=dict(size=11),
                                                                                             yanchor='bottom',
                                                                                             xanchor='right',
@@ -236,7 +236,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
     return fig
 
 
-@app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value'),Input('years','value'),
+@app.callback([Output('model','figure'),Output('econ-model','figure')],[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value'),Input('years','value'),
                                         Input('avg_type','value')])
 def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type):
     if clickData is not None and sub_group != 'ECON':
@@ -324,11 +324,21 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
                 line_color='#ED0925'
             ))
 
-        return fig
+        return fig, None
     elif sub_group == 'ECON':
-        print(clickData)
-        print('here')
-        return px.bar(df[sub_group]['Econ_Clean'],x = 'county', y = parameter)
+        local_df = df['ECON']['econ_data']
+        if parameter == 'pm2.5':
+            x_val = 'pm2.5'
+            names = {'pm2.5':'PM2.5 Concentration (mg/m3)','cases/100k':'COVID Cases/100k'}
+            title = 'COVID Cases/100k vs PM2.5 Concentration'
+        else:
+            x_val = 'bah'
+            names = {'bah':'Black & Hispanic Percentage of Cases','cases/100k':'COVID Cases/100k'}
+            title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
+
+        print(names)
+        return px.scatter(local_df,x= x_val, y= 'cases/100k',hover_name = 'county',labels=names,title = title), None
+    #Need to seperate the two panels and resolve issue with stacking
     else:
         text = "Click on a county to see trends"
         fig = px.line()
@@ -341,4 +351,4 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             showarrow=False,
             font_size=20
         )
-    return fig
+    return fig,None
