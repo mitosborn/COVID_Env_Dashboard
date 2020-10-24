@@ -30,14 +30,17 @@ param_output = {'GHG':[{"label": "CO2", "value": "XCO2"},
                 'ECON':[{"label": "Race vs COVID Deaths", "value": "race"},
                         {"label":"PM2.5 vs COVID Deaths","value":"pm2.5"}]}
 show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
-show_econ = lambda x: {'display':'none'} if x == 'ECON' else {'display':'inline-block'}
+show_econ = lambda x: {'display':'none'} if x == 'ECON' else {'display':'block'}
 show_ts = lambda x: {'display':'block'} if x == 'ECON' else {'display':'none'}
+hide_ts = lambda x: {'display':'none'} if x == 'ECON' else {'display':'flex'}
 #Function that updates the parameters shown. If the selected group is not water, hides the layer tab.
 #Additionally, the function always sets layers to none to prevent layers showing after water is deselected.
 @app.callback([Output('parameter','options'),Output('parameter','value'),Output('water_title','style'),Output('wtr_layer','style'),Output('wtr_layer','value'),Output('econ_mode','style'),Output('econ_vis','style'),Output('ts_controls','style')],[Input('sub-group','value')])
 def return_parameters(selected_group):
-    return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None', show_econ(selected_group),show_ts(selected_group),show_econ(selected_group)
+    return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None', show_econ(selected_group),show_ts(selected_group),hide_ts(selected_group)
+    #return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None', show_econ(selected_group),hide_ts(selected_group)
 
+#Output('econ_vis','style'),
 @app.callback([Output('date_range','marks'),Output('date_range','max'),Output('date_range','style'),Output('date_title','style'),Output('date_range','value')],[Input('date_interval','value'),Input('parameter','value'),Input('sub-group','value'),Input('mode','value'),Input('comp_year','value')])
 def return_timeline(interval, parameter, group,compare_mode, year_selected):
     print(interval,group,parameter)
@@ -63,11 +66,11 @@ def return_timeline(interval, parameter, group,compare_mode, year_selected):
         100: {'label': '100 °C', 'style': {'color': '#f50'}}
     }, 150, {'display':'none'}, {'display':'none'}, 1
 
-@app.callback(Output('tabs-content', 'children'),
-              [Input('tabs', 'value')])
-def render_content(tab):
-    if tab == 'tab-1':
-        return tab1.layout
+# @app.callback(Output('tabs-content', 'children'),
+#               [Input('tabs', 'value')])
+# def render_content(tab):
+#     if tab == 'tab-1':
+#         return tab1.layout
 
 
 @app.callback([Output('comp_year','options'),Output('mode_title','children')],[Input('mode','value')])

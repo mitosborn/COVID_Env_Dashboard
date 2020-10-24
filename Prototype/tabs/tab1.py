@@ -43,7 +43,7 @@ econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulativ
 wq_units = {"Dissolved Oxygen":"milligrams/Liter","Orthophosphate":"milligrams/Liter"}
 ghg_units = {"XCO2":"ppm","XCH4":"ppm"}
 units = {"AQ":aq_units,"ECON":econ_units,"WQ":wq_units,"GHG":ghg_units}
-layout = html.Div(dcc.Graph(id= 'cty_map'))
+layout = dcc.Graph(id= 'cty_map',style = {'width':'100%','height':'100%','display':'flex'})
 
 @app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')
                                           ,Input('mode','value')])
@@ -83,7 +83,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
             fig.add_trace(trace3)
 
             fig.update_layout(showlegend=True, title_text='County Average PM 2.5 and COVID Cases',
-                              title_x=0.5, title_y=0.94, width=750, height=750, legend=dict(font=dict(size=11),
+                              title_x=0.5, title_y=0.94, autosize = True, legend=dict(font=dict(size=11),
                                                                                             yanchor='bottom',
                                                                                             xanchor='right',
                                                                                             y=1, x=1, orientation='h'),
@@ -118,7 +118,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
             fig.add_trace(trace3)
 
             fig.update_layout(showlegend=True, title_text= 'Black & Hispanic American Percentage of COVID Cases/Deaths',
-                               title_x=0.5, title_y=0.94,width=750, height=750, legend=dict(font=dict(size=11),
+                               title_x=0.5, title_y=0.94, autosize = True, legend=dict(font=dict(size=11),
                                                                                             yanchor='bottom',
                                                                                             xanchor='right',
                                                                                             y=1, x=1, orientation='h'),
@@ -217,7 +217,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
             title = (lambda x,a: 'Annual Average of {} in {} {}'.format(a,comp_month, comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
 
 
-    fig.update_layout(title_text= title,width=750, height=750,
+    fig.update_layout(title_text= title,autosize = True,
                       mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
                                   accesstoken=mapbox_key, style='streets',
                                   zoom=4.75,layers=[{'sourcetype': 'geojson', 'opacity': .1,
@@ -289,21 +289,21 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
                 line_color=label_style[year]['color']
                 ))
         fig.update_layout(xaxis_title='Time',
-                          yaxis_title=parameter+' Concentration ('+units[sub_group][parameter]+')')
+                          yaxis_title=parameter+' Concentration ('+units[sub_group][parameter]+')',margin=dict(t=70,l=10,b=10,r=10))
 
         fig.update_traces(marker_size=20)
-        fig.update_xaxes(
-            rangeslider_visible=True,
-            rangeselector=dict(
-                buttons=list([
-                    dict(count=1, label="1m", step="month", stepmode="backward"),
-                    dict(count=6, label="6m", step="month", stepmode="backward"),
-                    dict(count=1, label="YTD", step="year", stepmode="todate"),
-                    dict(count=1, label="1y", step="year", stepmode="backward"),
-                    dict(step="all")
-                ])
-            )
-        )
+        # fig.update_xaxes(
+        #     rangeslider_visible=True,
+        #     rangeselector=dict(
+        #         buttons=list([
+        #             dict(count=1, label="1m", step="month", stepmode="backward"),
+        #             dict(count=6, label="6m", step="month", stepmode="backward"),
+        #             dict(count=1, label="YTD", step="year", stepmode="todate"),
+        #             dict(count=1, label="1y", step="year", stepmode="backward"),
+        #             dict(step="all")
+        #         ])
+        #     )
+        # )
         fig.layout.yaxis.update(range=[min(select['value']), max(select['value'])])
 
         if show_lines:
@@ -324,20 +324,20 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
                 line_color='#ED0925'
             ))
 
-        return fig, None
+        return fig,px.scatter()
     elif sub_group == 'ECON':
-        local_df = df['ECON']['econ_data']
         if parameter == 'pm2.5':
             x_val = 'pm2.5'
-            names = {'pm2.5':'PM2.5 Concentration (mg/m3)','cases/100k':'COVID Cases/100k'}
-            title = 'COVID Cases/100k vs PM2.5 Concentration'
+            x_title = 'PM2.5 Concentration (mg/m3)'
+            case_title = 'COVID Cases/100k vs PM2.5 Concentration'
+            death_title = 'COVID Deaths/100k vs PM2.5 Concentration'
         else:
             x_val = 'bah'
-            names = {'bah':'Black & Hispanic Percentage of Cases','cases/100k':'COVID Cases/100k'}
-            title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
+            x_title = 'Black & Hispanic Percentage of Cases'
+            case_title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
+            death_title = 'COVID Death/100k vs Black & Hispanic Percentage of Cases'
 
-        print(names)
-        return px.scatter(local_df,x= x_val, y= 'cases/100k',hover_name = 'county',labels=names,title = title), None
+        return return_scatter_figure(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title),return_scatter_figure(x_val, 'deaths/100k',x_title, 'COVID Deaths/100k', death_title)
     #Need to seperate the two panels and resolve issue with stacking
     else:
         text = "Click on a county to see trends"
@@ -351,4 +351,31 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             showarrow=False,
             font_size=20
         )
-    return fig,None
+    return fig, px.scatter()
+# @app.callback(Output('econ-model','figure'),[Input('parameter','value'),Input('sub-group','value')])
+# def display_death_scatter(parameter,sub_group):
+#     print(parameter,sub_group)
+#     if sub_group == 'ECON':
+#         print("I am inside")
+#         if parameter == 'pm2.5':
+#             x_val = 'pm2.5'
+#             x_title = 'PM2.5 Concentration (mg/m3)'
+#             title = 'COVID Deaths/100k vs PM2.5 Concentration'
+#         else:
+#             x_val = 'bah'
+#             x_title = 'Black & Hispanic Percentage of Cases'
+#             title = 'COVID Deaths/100k vs Black & Hispanic Percentage of Cases'
+#         print("I am in scatter")
+#
+#         return return_scatter_figure(x_val, 'deaths/100k',x_title, 'COVID Deaths/100k', title)
+#     else:
+#         return px.scatter()
+
+def return_scatter_figure(x_parameter,y_parameter,x_title,y_title,title):
+    local_df = df['ECON']['econ_data']
+    names = {x_parameter: x_title, y_parameter: y_title}
+    print(names)
+    fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title,height=400,width=800)
+    fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
+    #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
+    return fig
