@@ -1,7 +1,7 @@
 # Rice COVID19 Environmental Impacts Dashboard
 Dashboard the visualizes the environmental and economic impacts of COVID19 on Texas. Created utilizing Dash and Plotly. 
 
-Sources: 
+Data Sources: 
 1. [Air Quality](https://www.tceq.texas.gov/agency/data/lookup-data/download-data.html)
 2. [Greenhouse Gases](https://science.jpl.nasa.gov/EarthScience/index.cfm)
 
