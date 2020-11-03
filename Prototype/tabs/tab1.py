@@ -57,31 +57,16 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
         print(local_df.columns)
         fig = go.Figure()
         if parameter == 'pm2.5':
-            trace = go.Choroplethmapbox(geojson=df['ECON']['json'],
-                                        locations=local_df['fips'],
+            trace = go.Choroplethmapbox(geojson=counties,
+                                        locations=local_df['fips'].astype(str),
                                         z=local_df['pm2.5'],
                                         colorscale='oranges',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
-                                        marker_line_color='white', name='pm 2.5 mg/m3',
+                                        marker_line_color='white', name='pm 2.5 mg/m3', featureidkey= 'properties.FIPS',
                                         colorbar_title='pm 2.5 (mg/m<sup>3</sup>)', colorbar_titlefont=dict(size=11),
                                         colorbar_tickfont=dict(size=11))
 
-            trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
-                                      marker=go.scattermapbox.Marker(symbol='circle', size=2 * local_df[
-                                          'cases/100k'],
-                                                                     sizemode='area', opacity=0.4, color='gray'),
-                                      name='Cases per 100k Population')
-
-            trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
-                                      marker=go.scattermapbox.Marker(symbol='circle', size=20 * local_df[
-                                          'deaths/100k'],
-                                                                     sizemode='area', opacity=0.4, color='royalblue'),
-                                      name='Deaths per 100k Population')
-
-            fig.add_trace(trace2)
             fig.add_trace(trace)
-            fig.add_trace(trace3)
-
             fig.update_layout(showlegend=True, title_text='County Average PM 2.5 and COVID Cases',
                               title_x=0.5, title_y=0.94, autosize = True, legend=dict(font=dict(size=11),
                                                                                             yanchor='bottom',
@@ -92,30 +77,16 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                                           zoom=5.75))
         #Comparing race vs Cases/Deaths
         else:
-            trace = go.Choroplethmapbox(geojson=df['ECON']['json'],
-                                        locations=local_df['fips'],
-                                        z=local_df['bah'],
+            trace = go.Choroplethmapbox(geojson=counties,
+                                        locations=local_df['fips'].astype(str),
+                                        z=local_df['bah'],featureidkey= 'properties.FIPS',
                                         colorscale='oranges',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
                                         marker_line_color='white', name='Black and Hispanic %',
                                         colorbar_title='Percentage', colorbar_titlefont=dict(size=11),
                                         colorbar_tickfont=dict(size=11))
 
-            trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
-                                      marker=go.scattermapbox.Marker(symbol='circle', size=2 * local_df[
-                                          'cases/100k'],
-                                                                     sizemode='area', opacity=0.4, color='gray'),
-                                      name='Cases per 100k Population')
-
-            trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
-                                      marker=go.scattermapbox.Marker(symbol='circle', size=20 * local_df[
-                                          'deaths/100k'],
-                                                                     sizemode='area', opacity=0.4, color='royalblue'),
-                                      name='Deaths per 100k Population')
-
-            fig.add_trace(trace2)
             fig.add_trace(trace)
-            fig.add_trace(trace3)
 
             fig.update_layout(showlegend=True, title_text= 'Black & Hispanic American Percentage of COVID Cases/Deaths',
                                title_x=0.5, title_y=0.94, autosize = True, legend=dict(font=dict(size=11),
@@ -125,6 +96,24 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                               mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
                                           accesstoken=mapbox_key, style="streets",
                                           zoom=5.75))
+        trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
+                                  marker=go.scattermapbox.Marker(symbol='circle', size=2 * local_df[
+                                      'cases/100k'],
+                                                                 sizemode='area', sizemin=10, sizeref=2. * max(local_df[
+                                                                                                                   'cases/100k']) / (
+                                                                                                                  10 ** 2),
+                                                                 opacity=0.9, color='gray'),
+                                  name='Cases per 100k Population')
+
+        trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
+                                  marker=go.scattermapbox.Marker(symbol='circle', size=20 * local_df[
+                                      'deaths/100k'],
+                                                                 sizemode='area', opacity=0.4, color='royalblue'),
+                                  name='Deaths per 100k Population')
+
+        fig.add_trace(trace2)
+        fig.add_trace(trace3)
+
         return fig
 
 
@@ -336,6 +325,19 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             x_title = 'Black & Hispanic Percentage of Cases'
             case_title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
             death_title = 'COVID Death/100k vs Black & Hispanic Percentage of Cases'
+        if parameter == 'harris':
+            frame = df['ECON']['harris_cty']
+            frame_col = list(frame.columns)
+            harris_tbl = go.Figure(data=[go.Table(header=dict(values=[x.capitalize() for x in list(frame.columns)],
+                fill_color='paleturquoise',
+                align='left'),
+    cells=dict(values=[frame[frame_col[0]],frame[frame_col[1]],frame[frame_col[2]]],
+               fill_color='lavender',
+               align='left'))
+])
+
+            return harris_tbl, return_scatter_figure(x_val, 'deaths/100k', x_title,
+                                                                            'COVID Deaths/100k', death_title)
 
         return return_scatter_figure(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title),return_scatter_figure(x_val, 'deaths/100k',x_title, 'COVID Deaths/100k', death_title)
     #Need to seperate the two panels and resolve issue with stacking
@@ -375,7 +377,7 @@ def return_scatter_figure(x_parameter,y_parameter,x_title,y_title,title):
     local_df = df['ECON']['econ_data']
     names = {x_parameter: x_title, y_parameter: y_title}
     print(names)
-    fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title,height=400,width=800)
+    fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title,height=400,width=800, trendline="ols")
     fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
     #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
     return fig
