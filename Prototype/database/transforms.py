@@ -30,10 +30,7 @@ def get_data(file_dir, data_folder_name):
         data['county_centers']['name'] = data['county_centers']['name'].str.replace(' County', '')
         data['county_centers'].drop(['usps', 'ansicode'], axis=1, inplace=True)
         data['econ_data'] = data['econ_data'].merge(data['county_centers'],how = 'left',left_on = 'county',right_on = 'name')
-        #Read in ECON geojson
-        with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
-            counties = json.load(response)
-            data['json'] = counties
+
         data['econ_data'].columns = [col.strip() for col in data['econ_data'].columns]
     return data
 
