@@ -20,7 +20,7 @@ import plotly.express as px
 import os
 import calendar
 from plotly.subplots import make_subplots
-
+import numpy as np
 df = transforms.master_df
 
 PAGE_SIZE = 50
@@ -347,14 +347,18 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             row += 1
 
         fig.append_trace(return_scatter_figure(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title)['data'][0], row= row+1, col=1)
+        fig.append_trace(get_trend_line(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title), row= row+1, col=1)
+
         fig.update_xaxes(title_text=x_title, row=row+1, col=1)
         fig.update_yaxes(title_text= 'COVID Cases/100k', row=row+1, col=1)
         row += 1
         fig.append_trace(return_scatter_figure(x_val, 'deaths/100k', x_title, 'COVID Deaths/100k', death_title)['data'][0], row=row+1, col=1)
+        fig.append_trace(get_trend_line(x_val, 'deaths/100k', x_title, 'COVID Deaths/100k', death_title), row=row+1, col=1)
+
         fig.update_xaxes(title_text=x_title, row=row + 1, col=1)
         fig.update_yaxes(title_text='COVID Deaths/100k', row=row + 1, col=1)
         fig.update_layout(autosize=True, margin=dict(t=40, l=80, r=18, b=30))
-
+        fig['layout']['showlegend'] = False
         return fig
 
     #Need to seperate the two panels and resolve issue with stacking
@@ -394,12 +398,36 @@ def return_scatter_figure(x_parameter,y_parameter,x_title,y_title,title):
     local_df = df['ECON']['econ_data']
     names = {x_parameter: x_title, y_parameter: y_title}
     print(names)
-    fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title, trendline="ols")
+    fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title)
 
+    X = np.array(local_df[x_parameter]).reshape(-1, 1)
+
+    model = LinearRegression()
+    model.fit(X, np.array(local_df[y_parameter]))
+
+    x_range = np.linspace(X.min(), X.max(), 100)
+    y_range = model.predict(x_range.reshape(-1, 1))
+    print(x_range,y_range)
     #fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
     #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
     return fig
 
+def get_trend_line(x_parameter,y_parameter,x_title,y_title,title):
+    local_df = df['ECON']['econ_data']
+    X = np.array(local_df[x_parameter]).reshape(-1, 1)
+
+    model = LinearRegression()
+    model.fit(X, np.array(local_df[y_parameter]))
+
+    x_range = np.linspace(X.min(), X.max(), 100)
+    y_range = model.predict(x_range.reshape(-1, 1))
+    print(x_range,y_range)
+    #fig = px.line(x=x_range, y=y_range,labels = {'x':x_title,'y':y_title},color='red')
+    fig = go.Scatter(x=x_range, y=y_range,mode='lines', line=dict(color="#eb3434"),name = 'Regression')
+
+    #fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
+    #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
+    return fig
 
 
 # fig = make_subplots(rows=2, cols=1,specs=[[{"type": "table"}],[{"type": "scatter"}]])
