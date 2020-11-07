@@ -18,6 +18,8 @@ import geojson
 import plotly.express as px
 import os
 import calendar
+from plotly.subplots import make_subplots
+
 df = transforms.master_df
 
 PAGE_SIZE = 50
@@ -225,7 +227,7 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
     return fig
 
 
-@app.callback([Output('model','figure'),Output('econ-model','figure')],[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value'),Input('years','value'),
+@app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value'),Input('years','value'),
                                         Input('avg_type','value')])
 def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type):
     if clickData is not None and sub_group != 'ECON':
@@ -313,8 +315,9 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
                 line_color='#ED0925'
             ))
 
-        return fig,px.scatter()
+        return fig
     elif sub_group == 'ECON':
+        row = 0
         if parameter == 'pm2.5':
             x_val = 'pm2.5'
             x_title = 'PM2.5 Concentration (mg/m3)'
@@ -325,21 +328,38 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             x_title = 'Black & Hispanic Percentage of Cases'
             case_title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
             death_title = 'COVID Death/100k vs Black & Hispanic Percentage of Cases'
+
+        if parameter != 'harris':
+            fig = make_subplots(rows=2, cols=1, specs=[[{"type": "scatter"}], [{"type": "scatter"}]], subplot_titles=(
+            'COVID Cases/100k vs PM2.5 Concentration', 'COVID Deaths/100k vs PM2.5 Concentration'))
+        else:
+            fig = make_subplots(rows=3, cols=1,
+                                specs=[[{"type": "table"}], [{"type": "scatter"}], [{"type": "scatter"}]],
+                                subplot_titles=(
+                                'Harris County Race Breakdown', 'COVID Cases/100k vs PM2.5 Concentration',
+                                'COVID Deaths/100k vs PM2.5 Concentration'))
         if parameter == 'harris':
             frame = df['ECON']['harris_cty']
             frame_col = list(frame.columns)
-            harris_tbl = go.Figure(data=[go.Table(header=dict(values=[x.capitalize() for x in list(frame.columns)],
-                fill_color='paleturquoise',
-                align='left'),
-    cells=dict(values=[frame[frame_col[0]],frame[frame_col[1]],frame[frame_col[2]]],
-               fill_color='lavender',
-               align='left'))
-])
+            fig.add_trace(go.Table(header=dict(values=[x.capitalize() for x in list(frame.columns)],
+                                               fill_color='paleturquoise',
+                                               align='left'),
+                                   cells=dict(values=[frame[frame_col[0]], frame[frame_col[1]], frame[frame_col[2]]],
+                                              fill_color='lavender',
+                                              align='left')), row=1, col=1)
+            row += 1
 
-            return harris_tbl, return_scatter_figure(x_val, 'deaths/100k', x_title,
-                                                                            'COVID Deaths/100k', death_title)
+        fig.append_trace(return_scatter_figure(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title)['data'][0], row= row+1, col=1)
+        fig.update_xaxes(title_text=x_title, row=row+1, col=1)
+        fig.update_yaxes(title_text= 'COVID Cases/100k', row=row+1, col=1)
+        row += 1
+        fig.append_trace(return_scatter_figure(x_val, 'deaths/100k', x_title, 'COVID Deaths/100k', death_title)['data'][0], row=row+1, col=1)
+        fig.update_xaxes(title_text=x_title, row=row + 1, col=1)
+        fig.update_yaxes(title_text='COVID Deaths/100k', row=row + 1, col=1)
+        fig.update_layout(autosize=True, margin=dict(t=40, l=80, r=18, b=30))
 
-        return return_scatter_figure(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title),return_scatter_figure(x_val, 'deaths/100k',x_title, 'COVID Deaths/100k', death_title)
+        return fig
+
     #Need to seperate the two panels and resolve issue with stacking
     else:
         text = "Click on a county to see trends"
@@ -353,7 +373,7 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             showarrow=False,
             font_size=20
         )
-    return fig, px.scatter()
+    return fig
 # @app.callback(Output('econ-model','figure'),[Input('parameter','value'),Input('sub-group','value')])
 # def display_death_scatter(parameter,sub_group):
 #     print(parameter,sub_group)
@@ -377,7 +397,20 @@ def return_scatter_figure(x_parameter,y_parameter,x_title,y_title,title):
     local_df = df['ECON']['econ_data']
     names = {x_parameter: x_title, y_parameter: y_title}
     print(names)
-    fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title,height=400,width=800, trendline="ols")
-    fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
+    fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title, trendline="ols")
+
+    #fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
     #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
     return fig
+
+
+
+# fig = make_subplots(rows=2, cols=1,specs=[[{"type": "table"}],[{"type": "scatter"}]])
+#             fig.add_trace(go.Table(header=dict(values=[x.capitalize() for x in list(frame.columns)],
+#                 fill_color='paleturquoise',
+#                 align='left'),
+#     cells=dict(values=[frame[frame_col[0]],frame[frame_col[1]],frame[frame_col[2]]],
+#                fill_color='lavender',
+#                align='left')),row=1, col=1)
+#             fig.append_trace(return_scatter_figure(x_val, 'deaths/100k', x_title,
+#                                                                                 'COVID Deaths/100k', death_title)['data'][0],row=2, col=1)

@@ -45,7 +45,7 @@ navbar = dbc.Navbar(
     dark=False, style = {"position": "sticky", "top":"0","width": "100%","background": "#fff","z-index": "2000"}
 )
 
-sidebar = [dbc.Row(dbc.Col(html.Div(dcc.Graph(id = 'model')))),dbc.Row(dbc.Col(html.Div(dcc.Graph(id = 'econ-model'))),id ='econ_vis'),dbc.Row([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
+sidebar = [dbc.Row(dbc.Col(html.Div(dcc.Graph(id = 'model')))),dbc.Row([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
                                                                                        {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=['avg'])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
                                                 ],id='ts_controls',style={"height": "100%", "display": "flex"})]
 
@@ -81,7 +81,7 @@ layout = html.Div([navbar,dbc.Row([dbc.Col(
                                                                                                                                                                                                  ],style = dashboard_spacing)],id = "econ_mode")], style={'marginBottom': 50, 'marginTop': 25, 'marginLeft':15, 'marginRight':25}),width=2)
 
     ,dbc.Col(
-            html.Div(tab1.layout,style = {'width':'100%','height':'100%','display':'flex'}), width=5), dbc.Col(sidebar,width = 5)],className="h-25"),dbc.Row(bottom_text)
+            html.Div(tab1.layout,style = {'width':'100%','height':'100%','display':'flex'}), width=5), dbc.Col(sidebar,width = 5)],style = {'width':'100%','height':'100%','display':'flex'}),dbc.Row(bottom_text)
     
     ])
 

@@ -35,9 +35,9 @@ show_ts = lambda x: {'display':'block'} if x == 'ECON' else {'display':'none'}
 hide_ts = lambda x: {'display':'none'} if x == 'ECON' else {'display':'flex'}
 #Function that updates the parameters shown. If the selected group is not water, hides the layer tab.
 #Additionally, the function always sets layers to none to prevent layers showing after water is deselected.
-@app.callback([Output('parameter','options'),Output('parameter','value'),Output('water_title','style'),Output('wtr_layer','style'),Output('wtr_layer','value'),Output('econ_mode','style'),Output('econ_vis','style'),Output('ts_controls','style')],[Input('sub-group','value')])
+@app.callback([Output('parameter','options'),Output('parameter','value'),Output('water_title','style'),Output('wtr_layer','style'),Output('wtr_layer','value'),Output('econ_mode','style'),Output('ts_controls','style')],[Input('sub-group','value')])
 def return_parameters(selected_group):
-    return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None', show_econ(selected_group),show_ts(selected_group),hide_ts(selected_group)
+    return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None', show_econ(selected_group),hide_ts(selected_group)
     #return param_output[selected_group], param_output[selected_group][0]['value'], show_water(selected_group),show_water(selected_group), 'None', show_econ(selected_group),hide_ts(selected_group)
 
 #Output('econ_vis','style'),
