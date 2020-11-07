@@ -28,7 +28,7 @@ param_output = {'GHG':[{"label": "CO2", "value": "XCO2"},
                 'WQ':[{"label": "Dissolved Oxygen", "value": "Dissolved Oxygen"},
                      {"label": "Orthophosphate", "value": "Orthophosphate"}],
                 'ECON':[{"label": "Race vs COVID Deaths", "value": "race"},
-                        {"label":"PM2.5 vs COVID Deaths","value":"pm2.5"},{"label":"Harris","value":"harris"}]}
+                        {"label":"PM2.5 vs COVID Deaths","value":"pm2.5"}]}
 show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
 show_econ = lambda x: {'display':'none'} if x == 'ECON' else {'display':'block'}
 show_ts = lambda x: {'display':'block'} if x == 'ECON' else {'display':'none'}

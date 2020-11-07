@@ -14,6 +14,7 @@ import json
 from urllib.request import urlopen
 from datetime import datetime as dt
 import re
+from sklearn.linear_model import LinearRegression
 import geojson
 import plotly.express as px
 import os
@@ -45,7 +46,7 @@ econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulativ
 wq_units = {"Dissolved Oxygen":"milligrams/Liter","Orthophosphate":"milligrams/Liter"}
 ghg_units = {"XCO2":"ppm","XCH4":"ppm"}
 units = {"AQ":aq_units,"ECON":econ_units,"WQ":wq_units,"GHG":ghg_units}
-layout = dcc.Graph(id= 'cty_map',style = {'width':'100%','height':'100%','display':'flex'})
+layout = dcc.Graph(id= 'cty_map',style={"height":'100%'})
 
 @app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')
                                           ,Input('mode','value')])
@@ -323,22 +324,18 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             x_title = 'PM2.5 Concentration (mg/m3)'
             case_title = 'COVID Cases/100k vs PM2.5 Concentration'
             death_title = 'COVID Deaths/100k vs PM2.5 Concentration'
+            fig = make_subplots(rows=2, cols=1, specs=[[{"type": "scatter"}], [{"type": "scatter"}]], subplot_titles=(
+                'COVID Cases/100k vs PM2.5 Concentration', 'COVID Deaths/100k vs PM2.5 Concentration'))
         else:
             x_val = 'bah'
             x_title = 'Black & Hispanic Percentage of Cases'
             case_title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
             death_title = 'COVID Death/100k vs Black & Hispanic Percentage of Cases'
-
-        if parameter != 'harris':
-            fig = make_subplots(rows=2, cols=1, specs=[[{"type": "scatter"}], [{"type": "scatter"}]], subplot_titles=(
-            'COVID Cases/100k vs PM2.5 Concentration', 'COVID Deaths/100k vs PM2.5 Concentration'))
-        else:
             fig = make_subplots(rows=3, cols=1,
                                 specs=[[{"type": "table"}], [{"type": "scatter"}], [{"type": "scatter"}]],
                                 subplot_titles=(
-                                'Harris County Race Breakdown', 'COVID Cases/100k vs PM2.5 Concentration',
-                                'COVID Deaths/100k vs PM2.5 Concentration'))
-        if parameter == 'harris':
+                                    'Harris County Race Breakdown', case_title,
+                                    death_title))
             frame = df['ECON']['harris_cty']
             frame_col = list(frame.columns)
             fig.add_trace(go.Table(header=dict(values=[x.capitalize() for x in list(frame.columns)],

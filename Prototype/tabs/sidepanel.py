@@ -45,21 +45,11 @@ navbar = dbc.Navbar(
     dark=False, style = {"position": "sticky", "top":"0","width": "100%","background": "#fff","z-index": "2000"}
 )
 
-sidebar = [dbc.Row(dbc.Col(html.Div(dcc.Graph(id = 'model')))),dbc.Row([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
+sidebar = dbc.Col(dbc.Container([dbc.Row(dbc.Col([dcc.Graph(id = 'model',style={'height':'100%'})]),style = {'height':'92%'}),dbc.Row([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
                                                                                        {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=['avg'])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
-                                                ],id='ts_controls',style={"height": "100%", "display": "flex"})]
+                                                ],style = {'height':'8%'},id='ts_controls')],style={"height":"90%"},fluid=True),width =5)
 
-bottom_text = dbc.Col([html.Label([html.H6('Data Sources'),' Air Quality: ', html.A('TCEQ', href=AQ_source,target = "_blank"),', Greenhouse Gases: ',html.A('NASA',href = GHG_source,target="_blank")]),dcc.Markdown('''---
-                                        Reminder to replace this with Markdown!''')
-])
-
-old_sidebar = [dcc.Graph(id = 'model'),
-                                        dbc.Row([html.Div(dcc.Graph(id = 'econ-model'),id ='econ_vis'),
-                                                 html.Div([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
-                                                                                       {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=['avg'])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
-                                                ],id='ts_controls')])]
-
-layout = html.Div([navbar,dbc.Row([dbc.Col(
+controls = dbc.Col(
         html.Div([
 
             html.Div([html.H3('Select group'), dcc.Dropdown(
@@ -79,9 +69,16 @@ layout = html.Div([navbar,dbc.Row([dbc.Col(
                                                                                        {'label':'Monthly','value':'monthly'},{'label':'Annual','value':'annual'}],value = 'monthly')],style = dashboard_spacing),html.Div([html.H3('Select Month', id = 'date_title'),dcc.Slider(id = 'date_range',min = 1, max = 12)
 
                                                                                                                                                                                                  ],style = dashboard_spacing)],id = "econ_mode")], style={'marginBottom': 50, 'marginTop': 25, 'marginLeft':15, 'marginRight':25}),width=2)
+heat_map = dbc.Col(tab1.layout, width=5)
+bottom_text = dbc.Col([dcc.Markdown('''---'''),html.Label([html.H6('Data Sources'),' Air Quality: ', html.A('TCEQ', href=AQ_source,target = "_blank"),', Greenhouse Gases: ',html.A('NASA',href = GHG_source,target="_blank")])
+])
 
-    ,dbc.Col(
-            html.Div(tab1.layout,style = {'width':'100%','height':'100%','display':'flex'}), width=5), dbc.Col(sidebar,width = 5)],style = {'width':'100%','height':'100%','display':'flex'}),dbc.Row(bottom_text)
-    
-    ])
+# old_sidebar = [dcc.Graph(id = 'model'),
+#                                         dbc.Row([html.Div(dcc.Graph(id = 'econ-model'),id ='econ_vis'),
+#                                                  html.Div([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
+#                                                                                        {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=['avg'])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
+#                                                 ],id='ts_controls')])]
 
+old_layout = html.Div([navbar,dbc.Row([controls,heat_map, sidebar],style = {'width':'100%','height':'100%','display':'flex'}),dbc.Row(bottom_text)])
+
+layout = html.Div([navbar,dbc.Container([dbc.Row([controls,heat_map,sidebar],style = {'height':'80%','margin':'1'}),dbc.Row([bottom_text],style = {'height':'20%'})],style={"height": "100%","width":"100%"},fluid=True)],style={"height": "100vh","width":"100vw"})
