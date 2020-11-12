@@ -10,7 +10,10 @@ Prototype currently hosted at https://rice-e-covid-tracker.herokuapp.com/
 
 # Screenshots
 ## Greenhouse Gases  
-![dashboard](https://user-images.githubusercontent.com/39538422/97601061-fb950b00-19c6-11eb-8834-ab1df3985112.png)
+![dashboard](https://user-images.githubusercontent.com/39538422/98979802-a7af1980-24d0-11eb-8c75-48291e2ad562.png)
 
 ## COVID Cases/Deaths
-![screenshot2](https://user-images.githubusercontent.com/39538422/97601799-cc32ce00-19c7-11eb-8293-90f2a731d3bc.png)
+![screenshot2](https://user-images.githubusercontent.com/39538422/98979754-97973a00-24d0-11eb-97b0-6b61b82324d5.png)
+
+![screenshot3](https://user-images.githubusercontent.com/39538422/98979774-9e25b180-24d0-11eb-9091-e252b81d0218.png)
+
