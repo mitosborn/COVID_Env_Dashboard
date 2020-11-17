@@ -9,7 +9,7 @@ from dash.dependencies import Input, Output
 import datetime
 from app import app
 import json
-from tabs import tab1, tab2
+from tabs import tab1
 from database import transforms
 
 df = transforms.master_df

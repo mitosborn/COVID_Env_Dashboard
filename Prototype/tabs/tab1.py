@@ -38,9 +38,6 @@ with open('river_basin.json') as f:
 with open('watershed.json') as f:
     watershed = geojson.load(f)
 
-#  html.Div([
-#         dbc.Row([dbc.Col(html.Div(html.P("A single, half-width column")),style = {'padding':'50px'})
-#                 ,dbc.Col(
 aq_units = {'Ozone':'ppm','PM2.5':'μg/m3','NOx':'ppb','CO':'ppm','NO':'ppm'}
 econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulative deaths per 100k":'deaths/100k',"cumulative cases per 100k":'cases/100k'}
 wq_units = {"Dissolved Oxygen":"milligrams/Liter","Orthophosphate":"milligrams/Liter"}
@@ -99,17 +96,18 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                               mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
                                           accesstoken=mapbox_key, style="streets",
                                           zoom=5.75))
+        #Cases/100k
         trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
-                                  marker=go.scattermapbox.Marker(symbol='circle', size=2 * local_df[
+                                  marker=go.scattermapbox.Marker(symbol='circle', size=local_df[
                                       'cases/100k'],
-                                                                 sizemode='area', sizemin=10, sizeref=2. * max(local_df[
+                                                                 sizemode='area',  sizeref=2. * max(local_df[
                                                                                                                    'cases/100k']) / (
-                                                                                                                  10 ** 2),
+                                                                                                                  50 ** 2),
                                                                  opacity=0.9, color='gray'),
                                   name='Cases per 100k Population')
-
+        #Deaths/100k
         trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
-                                  marker=go.scattermapbox.Marker(symbol='circle', size=20 * local_df[
+                                  marker=go.scattermapbox.Marker(symbol='circle', size=10 * local_df[
                                       'deaths/100k'],
                                                                  sizemode='area', opacity=0.4, color='royalblue'),
                                   name='Deaths per 100k Population')
@@ -159,16 +157,6 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
 
         print(current)
         print("Space")
-
-        """
-        Steps:
-        # 1. Implement functionality of difference button
-        #    - UI should swap out "comparison year" with "selected year" -> This will be a value switch
-        #    - UI should swap out contents of year selector by adding in 2020
-        #    - This can be accomplished in one method
-          2. 
-        """
-
 
         if comp_type == 'annual':
             merged = merged.groupby(['fips','county']).mean().reset_index()
@@ -272,7 +260,11 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
         fig = px.line(title='Concentration of '+parameter + ' in ' + select.loc[0,'county'] + ' County',labels = {'date':'Date'})
         label_style = {2020:{'label':'2020','color':'#0921ED'},
                        2019:{'label':'2019','color':'#ED0925'}, 2018:{'label':'2018','color':'#09ED10'},2017:{'label':'2017','color':'#ED09ED'},2016:{'label':'2016','color':'#F6F79D'},2015:{'label':'2015','color':'#7EF3E5'},'avg':{'label':'Avg 2015-2019','color':'#94B8D5'}}
+        max_val = 0
+        min_val = float('inf')
         for year, frame in dataframes.items():
+            max_val = max(max_val,max(frame['value']))
+            min_val = min(min_val,min(frame['value']))
             fig.add_trace(go.Scatter(
                 x=frame['date'],
                 y=frame['value'],
@@ -284,33 +276,21 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
                           yaxis_title=parameter+' Concentration ('+units[sub_group][parameter]+')',margin=dict(t=70,l=10,b=10,r=10))
 
         fig.update_traces(marker_size=20)
-        # fig.update_xaxes(
-        #     rangeslider_visible=True,
-        #     rangeselector=dict(
-        #         buttons=list([
-        #             dict(count=1, label="1m", step="month", stepmode="backward"),
-        #             dict(count=6, label="6m", step="month", stepmode="backward"),
-        #             dict(count=1, label="YTD", step="year", stepmode="todate"),
-        #             dict(count=1, label="1y", step="year", stepmode="backward"),
-        #             dict(step="all")
-        #         ])
-        #     )
-        # )
-        fig.layout.yaxis.update(range=[min(select['value']), max(select['value'])])
+        fig.layout.yaxis.update(range=[min_val, max_val])
 
         if show_lines:
             opening = 'State<br>Opening'
             closure = "State<br>Closure"
             fig.add_trace(go.Scatter(
                 x=["2020-05-05","2020-05-05"],
-                y=[min(select['value']), max(select['value'])],
+                y=[min_val, max_val],
                 name=opening,
                 mode = 'lines',
                 line_color = '#51E10E'
             ))
             fig.add_trace(go.Scatter(
                 x=["2020-04-02", "2020-04-02"],
-                y=[min(select['value']), max(select['value'])],
+                y=[min_val, max_val],
                 name=closure,
                 mode='lines',
                 line_color='#ED0925'
@@ -330,7 +310,7 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             x_val = 'bah'
             x_title = 'Black & Hispanic Percentage of Cases'
             case_title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
-            death_title = 'COVID Death/100k vs Black & Hispanic Percentage of Cases'
+            death_title = 'COVID Deaths/100k vs Black & Hispanic Percentage of Cases'
             fig = make_subplots(rows=3, cols=1,
                                 specs=[[{"type": "table"}], [{"type": "scatter"}], [{"type": "scatter"}]],
                                 subplot_titles=(
@@ -375,24 +355,6 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             font_size=20
         )
     return fig
-# @app.callback(Output('econ-model','figure'),[Input('parameter','value'),Input('sub-group','value')])
-# def display_death_scatter(parameter,sub_group):
-#     print(parameter,sub_group)
-#     if sub_group == 'ECON':
-#         print("I am inside")
-#         if parameter == 'pm2.5':
-#             x_val = 'pm2.5'
-#             x_title = 'PM2.5 Concentration (mg/m3)'
-#             title = 'COVID Deaths/100k vs PM2.5 Concentration'
-#         else:
-#             x_val = 'bah'
-#             x_title = 'Black & Hispanic Percentage of Cases'
-#             title = 'COVID Deaths/100k vs Black & Hispanic Percentage of Cases'
-#         print("I am in scatter")
-#
-#         return return_scatter_figure(x_val, 'deaths/100k',x_title, 'COVID Deaths/100k', title)
-#     else:
-#         return px.scatter()
 
 def return_scatter_figure(x_parameter,y_parameter,x_title,y_title,title):
     local_df = df['ECON']['econ_data']
@@ -428,14 +390,3 @@ def get_trend_line(x_parameter,y_parameter,x_title,y_title,title):
     #fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
     #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
     return fig
-
-
-# fig = make_subplots(rows=2, cols=1,specs=[[{"type": "table"}],[{"type": "scatter"}]])
-#             fig.add_trace(go.Table(header=dict(values=[x.capitalize() for x in list(frame.columns)],
-#                 fill_color='paleturquoise',
-#                 align='left'),
-#     cells=dict(values=[frame[frame_col[0]],frame[frame_col[1]],frame[frame_col[2]]],
-#                fill_color='lavender',
-#                align='left')),row=1, col=1)
-#             fig.append_trace(return_scatter_figure(x_val, 'deaths/100k', x_title,
-#                                                                                 'COVID Deaths/100k', death_title)['data'][0],row=2, col=1)
