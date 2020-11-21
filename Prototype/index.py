@@ -7,14 +7,14 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
 from app import app
-from tabs import sidepanel, tab1, tab2
+from tabs import sidepanel, tab1
 from database import transforms
 import dash
 from dash.dependencies import Input, Output
 import dash_table
 import pandas as pd
 
-from app import app
+from app import app, server
 from tabs import sidepanel, tab1, tab2
 from database import transforms
 df = transforms.master_df
@@ -27,8 +27,8 @@ param_output = {'GHG':[{"label": "CO2", "value": "XCO2"},
                       {"label": "Ozone", "value": "Ozone"}],
                 'WQ':[{"label": "Dissolved Oxygen", "value": "Dissolved Oxygen"},
                      {"label": "Orthophosphate", "value": "Orthophosphate"}],
-                'ECON':[{"label": "Race vs COVID Deaths", "value": "race"},
-                        {"label":"PM2.5 vs COVID Deaths","value":"pm2.5"}]}
+                'ECON':[{"label": "Race/Ethnicity", "value": "race"},
+                        {"label":"PM2.5","value":"pm2.5"}]}
 show_water = lambda x: {'display':'block'} if x == 'WQ' else {'display':'none'}
 show_econ = lambda x: {'display':'none'} if x == 'ECON' else {'display':'block'}
 show_ts = lambda x: {'display':'block'} if x == 'ECON' else {'display':'none'}
@@ -46,10 +46,7 @@ def return_timeline(interval, parameter, group,compare_mode, year_selected):
     print(interval,group,parameter)
     base_year = 2020
     if len(compare_mode) == 0:
-        if year_selected == 'avg':
-            base_year = 2000
-        else:
-            base_year = year_selected
+        base_year = year_selected
     if interval == 'monthly':
         print(group, parameter)
         local_df = df[group][parameter]
@@ -79,8 +76,8 @@ def update_comp_chart(compare_mode):
     if len(compare_mode) > 0:
         return [{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017},
                  {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},
-                 {'label': '2015-2019 Average', 'value': 'avg'}], html.H3("Comparison Year")
-    return ([{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017}, {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},{'label': '2015-2019 Average', 'value': 'avg'},{'label': '2020', 'value': 2020}],
+                 {'label': '2015-2019 Average', 'value': 2000}], html.H3("Comparison Year")
+    return ([{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017}, {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},{'label': '2015-2019 Average', 'value': 2000},{'label': '2020', 'value': 2020}],
             html.H3("Viewing Year"))
 # @app.callback([Output('econ_vis','style'),Output('ts_controls','style')],[Input('sub-group','value'),Input('parameter','value')])
 # def update_panel_display(sub_group,parameter):

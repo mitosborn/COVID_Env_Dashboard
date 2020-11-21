@@ -37,7 +37,8 @@ with open('river_basin.json') as f:
     riverbasin = geojson.load(f)
 with open('watershed.json') as f:
     watershed = geojson.load(f)
-
+superscript = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+mg3 = '(\u03BCg/m3)'.translate(superscript)
 aq_units = {'Ozone':'ppm','PM2.5':'μg/m3','NOx':'ppb','CO':'ppm','NO':'ppm'}
 econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulative deaths per 100k":'deaths/100k',"cumulative cases per 100k":'cases/100k'}
 wq_units = {"Dissolved Oxygen":"milligrams/Liter","Orthophosphate":"milligrams/Liter"}
@@ -62,12 +63,12 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                                         z=local_df['pm2.5'],
                                         colorscale='oranges',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
-                                        marker_line_color='white', name='pm 2.5 mg/m3', featureidkey= 'properties.FIPS',
-                                        colorbar_title='pm 2.5 (mg/m<sup>3</sup>)', colorbar_titlefont=dict(size=11),
+                                        marker_line_color='white', name='pm 2.5 '+mg3, featureidkey= 'properties.FIPS',
+                                        colorbar_title='PM 2.5 (mg/m<sup>3</sup>)', colorbar_titlefont=dict(size=11),
                                         colorbar_tickfont=dict(size=11))
 
             fig.add_trace(trace)
-            fig.update_layout(showlegend=True, title_text='County Average PM 2.5 and COVID Cases',
+            fig.update_layout(showlegend=True, title_text='Historical PM2.5 and COVID Incidence',
                               title_x=0.5, title_y=0.94, autosize = True, legend=dict(font=dict(size=11),
                                                                                             yanchor='bottom',
                                                                                             xanchor='right',
@@ -82,13 +83,13 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                                         z=local_df['bah'],featureidkey= 'properties.FIPS',
                                         colorscale='oranges',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
-                                        marker_line_color='white', name='Black and Hispanic %',
+                                        marker_line_color='white', name='Percent Minority: ',
                                         colorbar_title='Percentage', colorbar_titlefont=dict(size=11),
                                         colorbar_tickfont=dict(size=11))
 
             fig.add_trace(trace)
 
-            fig.update_layout(showlegend=True, title_text= 'Black & Hispanic American Percentage of COVID Cases/Deaths',
+            fig.update_layout(showlegend=True, title_text= 'Percentage Population Minority vs. COVID incidence',
                                title_x=0.5, title_y=0.94, autosize = True, legend=dict(font=dict(size=11),
                                                                                             yanchor='bottom',
                                                                                             xanchor='right',
@@ -120,21 +121,18 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
 
 
     else:
-        if comp_year == 'avg':
-            year = 2000
-        else:
-            year = comp_year
+        year = comp_year
         print("HERSERERSRE")
         print(parameter)
         print(sub_group)
         local_df = df[sub_group][parameter].copy()
 
-        # Create 2015-2019 df
-        if year == 2000:
-            dataframe = local_df[local_df['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
-            dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
-            dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
-            local_df = local_df.append(dataframe)
+        # # Create 2015-2019 df
+        # if year == 2000:
+        #     dataframe = local_df[local_df['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
+        #     dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
+        #     dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
+        #     local_df = local_df.append(dataframe)
 
 
 
@@ -188,13 +186,13 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
         if comp_type == 'annual':
             title = (lambda x,a: 'Annual Difference of {} between {} and 2020'.format(a,comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
         else:
-            title = (lambda x,a: 'Annual Difference of {} between {} {} and {} 2020'.format(a,comp_month,comp_year,comp_month) if x not in 'ECON' else a.capitalize() + ' as of '+date.strftime("%B %d, %Y"))(sub_group,parameter)
+            title = (lambda x,a: 'Annual Difference of {} between {} {} and {} 2020'.format(a,comp_month[0:3],comp_year,comp_month[0:3]) if x not in 'ECON' else a.capitalize() + ' as of '+date.strftime("%B %d, %Y"))(sub_group,parameter)
 
     else:
         if comp_type == 'annual':
             title = (lambda x, a: 'Annual Average of {} in {}'.format(a, str(year)) if x not in 'ECON' else a.capitalize() + ' as of ' + str(year))(sub_group, parameter)
         else:
-            title = (lambda x,a: 'Annual Average of {} in {} {}'.format(a,comp_month, comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
+            title = (lambda x,a: 'Annual Average of {} in {} {}'.format(a,comp_month[0:3], comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
 
 
     fig.update_layout(title_text= title,autosize = True,
@@ -232,15 +230,8 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
         select = select.groupby(['date', 'fips', 'county']).mean().reset_index()
         dataframes = {}
         for year in years:
-            if year == 'avg':
-                print(select)
-                dataframe = select[select['date'].dt.year.isin([2015,2016,2017,2018,2019])].copy()
-                dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2020))
-                dataframe = dataframe.groupby(['date','fips','county']).mean().reset_index()
-            else:
-                dataframe = select[select['date'].dt.year == year].copy()
-                dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2020))
-
+            dataframe = select[select['date'].dt.year == year].copy()
+            dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2020))
             if avg_type == 'weekly':
                 dataframe = dataframe.groupby(['county', 'fips']).apply(
                         lambda x: x.resample('7D', on='date').mean()).reset_index()
@@ -259,41 +250,45 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
         print(dataframes)
         fig = px.line(title='Concentration of '+parameter + ' in ' + select.loc[0,'county'] + ' County',labels = {'date':'Date'})
         label_style = {2020:{'label':'2020','color':'#0921ED'},
-                       2019:{'label':'2019','color':'#ED0925'}, 2018:{'label':'2018','color':'#09ED10'},2017:{'label':'2017','color':'#ED09ED'},2016:{'label':'2016','color':'#F6F79D'},2015:{'label':'2015','color':'#7EF3E5'},'avg':{'label':'Avg 2015-2019','color':'#94B8D5'}}
+                       2019:{'label':'2019','color':'#ED0925'}, 2018:{'label':'2018','color':'#09ED10'},2017:{'label':'2017','color':'#ED09ED'},2016:{'label':'2016','color':'#F6F79D'},2015:{'label':'2015','color':'#7EF3E5'},2000:{'label':'Avg 2015-2019','color':'#94B8D5'}}
         max_val = 0
         min_val = float('inf')
         for year, frame in dataframes.items():
-            max_val = max(max_val,max(frame['value']))
-            min_val = min(min_val,min(frame['value']))
+            max_val = max(max_val, max(frame['value']))
+            min_val = min(min_val, min(frame['value']))
             fig.add_trace(go.Scatter(
                 x=frame['date'],
                 y=frame['value'],
                 name=label_style[year]['label'],
                 mode='lines',
                 line_color=label_style[year]['color']
-                ))
+            ))
         fig.update_layout(xaxis_title='Time',
-                          yaxis_title=parameter+' Concentration ('+units[sub_group][parameter]+')',margin=dict(t=70,l=10,b=10,r=10))
+                          yaxis_title=parameter + ' Concentration (' + units[sub_group][parameter] + ')',
+                          margin=dict(t=70, l=10, b=10, r=10))
 
         fig.update_traces(marker_size=20)
+        #Add space for max value to show on graph
+        max_val = 1.01 * max_val
+        min_val = .989 * min_val
         fig.layout.yaxis.update(range=[min_val, max_val])
 
         if show_lines:
             opening = 'State<br>Opening'
             closure = "State<br>Closure"
             fig.add_trace(go.Scatter(
-                x=["2020-05-05","2020-05-05"],
+                x=["2020-05-05", "2020-05-05"],
                 y=[min_val, max_val],
                 name=opening,
-                mode = 'lines',
-                line_color = '#51E10E'
+                mode='lines',
+                line={'dash': 'dot', 'color': 'black', 'width': 4}
             ))
             fig.add_trace(go.Scatter(
                 x=["2020-04-02", "2020-04-02"],
                 y=[min_val, max_val],
                 name=closure,
                 mode='lines',
-                line_color='#ED0925'
+                line={'shape':'linear','dash': 'dash', 'color': 'black','width':4},
             ))
 
         return fig
@@ -301,24 +296,26 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
         row = 0
         if parameter == 'pm2.5':
             x_val = 'pm2.5'
-            x_title = 'PM2.5 Concentration (mg/m3)'
-            case_title = 'COVID Cases/100k vs PM2.5 Concentration'
-            death_title = 'COVID Deaths/100k vs PM2.5 Concentration'
+            x_title = 'PM2.5 Concentration ' + mg3
+            case_title = 'COVID Cases vs PM2.5 Concentration'
+            death_title = 'COVID Deaths vs PM2.5 Concentration'
             fig = make_subplots(rows=2, cols=1, specs=[[{"type": "scatter"}], [{"type": "scatter"}]], subplot_titles=(
-                'COVID Cases/100k vs PM2.5 Concentration', 'COVID Deaths/100k vs PM2.5 Concentration'))
+                'COVID Cases vs PM2.5 Concentration', 'COVID Deaths vs PM2.5 Concentration'))
         else:
             x_val = 'bah'
-            x_title = 'Black & Hispanic Percentage of Cases'
-            case_title = 'COVID Cases/100k vs Black & Hispanic Percentage of Cases'
-            death_title = 'COVID Deaths/100k vs Black & Hispanic Percentage of Cases'
+            x_title = 'Percentage Population Minority'
+            case_title = 'COVID Cases vs Percentage Population Minority'
+            death_title = 'COVID Deaths vs Percentage Population Minority'
             fig = make_subplots(rows=3, cols=1,
                                 specs=[[{"type": "table"}], [{"type": "scatter"}], [{"type": "scatter"}]],
                                 subplot_titles=(
-                                    'Harris County Race Breakdown', case_title,
+                                    'Cost of COVID Deaths by Race/Ethnicity (Harris County)', case_title,
                                     death_title))
             frame = df['ECON']['harris_cty']
             frame_col = list(frame.columns)
-            fig.add_trace(go.Table(header=dict(values=[x.capitalize() for x in list(frame.columns)],
+            header = [x.capitalize() for x in list(frame.columns)]
+            header[0] = 'Race/Ethnicity'
+            fig.add_trace(go.Table(header=dict(values=header,
                                                fill_color='paleturquoise',
                                                align='left'),
                                    cells=dict(values=[frame[frame_col[0]], frame[frame_col[1]], frame[frame_col[2]]],

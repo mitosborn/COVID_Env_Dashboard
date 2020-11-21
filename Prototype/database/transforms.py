@@ -4,11 +4,11 @@ from os.path import isfile, join
 import os
 from urllib.request import urlopen
 import json
-# Method to read in all dataframes in a single file and return 
+# Method to read in all dataframes in a single file and return
 # a dictionary containing all of them where the key is the parameter
 # and the value is the dataframe
 def get_data(file_dir, data_folder_name):
-    path_to_files = os.path.join(file_dir, data_folder_name)      
+    path_to_files = os.path.join(file_dir, data_folder_name)
     files = [f for f in listdir(path_to_files) if isfile(join(path_to_files, f)) and not f.startswith('.')]
     data = {}
     for fil in files:
@@ -21,6 +21,8 @@ def get_data(file_dir, data_folder_name):
             print(dataframe.columns)
             dataframe['date'] = pd.to_datetime(dataframe['date'])
             dataframe['fips'] = dataframe['fips'].astype(int).astype(str)
+            dataframe = add_five_year_average(dataframe)
+
         except:
             print("Has no date col")
         data[parameter] = dataframe
@@ -34,6 +36,13 @@ def get_data(file_dir, data_folder_name):
         data['econ_data'].columns = [col.strip() for col in data['econ_data'].columns]
     return data
 
+def add_five_year_average(data):
+    dataframe = data[data['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
+    dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
+    dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
+    data = data.append(dataframe)
+    return data
+
 # Method to form master dictionary that contains all data from the sub-groups.
 # Outputs dictionary with key that is the name of the sub-group and value of
 # the dataframes for that sub-group
@@ -45,7 +54,7 @@ def form_dataframe(file_dir,folder_names):
 
 #Get address to current directory (This will not work in Jupyter NB) 
 file_dir = os.path.dirname(os.path.abspath(__file__))
-file_names = ['AQ','GHG','WQ','ECON']
+file_names = ['AQ','GHG','ECON']
 master_df = form_dataframe(file_dir,file_names)
 
 

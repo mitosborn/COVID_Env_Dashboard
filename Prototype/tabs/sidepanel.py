@@ -19,7 +19,7 @@ dashboard_spacing = {'margin-bottom':'1.2em'}
 interval = [{'label':'Daily','value':'daily'},{'label':'Weekly','value':'weekly'},{'label':'Monthly','value':'monthly'},{'label':'Rolling 14 day average','value':'rolling'}]
 years = [{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017},
                  {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},
-                 {'label': '2015-2019 Average', 'value': 'avg'}]
+                 {'label': '2015-2019 Average', 'value': 2000}]
 AQ_source = 'https://www.tceq.texas.gov/agency/data/lookup-data/download-data.html'
 GHG_source = "https://science.jpl.nasa.gov/EarthScience/index.cfm"
 
@@ -46,7 +46,7 @@ navbar = dbc.Navbar(
 )
 
 sidebar = dbc.Col(dbc.Container([dbc.Row(dbc.Col([dcc.Graph(id = 'model',style={'height':'100%'})]),style = {'height':'92%'}),dbc.Row([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
-                                                                                       {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=['avg'])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
+                                                                                       {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dbc.Checklist(id = 'years',options = years,value=[2000],inline=True)])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
                                                 ],style = {'height':'8%'},id='ts_controls')],style={"height":"90%"},fluid=True),width =5)
 
 controls = dbc.Col(
@@ -55,7 +55,7 @@ controls = dbc.Col(
             html.Div([html.H3('Select group'), dcc.Dropdown(
                        id='sub-group',
                          options = [{'label':i,'value':selection[i]} for i in selection.keys()],
-                         searchable = False, clearable = False, placeholder = 'Select a group',value ='AQ')],style = dashboard_spacing),
+                         searchable = False, clearable = False,value ='AQ')],style = dashboard_spacing),
         html.Div([html.H3('Select Parameter'), dcc.Dropdown(id = 'parameter',searchable = False,options = [{"label": "Air Quality - NOx", "value": "NOx"}],clearable = False,value = 'NOx')
                    ],style = dashboard_spacing), html.Div([html.H3('Layers',id = 'water_title'),dbc.RadioItems(id = 'wtr_layer',options=[
                 {'label':'None','value':'None'},
@@ -65,7 +65,7 @@ controls = dbc.Col(
 
             ],
         value='None')]),html.Div([html.Div([html.H3("Mode"),dbc.Checklist(id = 'mode',options = [
-                                                                                       {'label':'Take difference between 2020 and other years','value':True}],value = [True],inline = True,switch=True)],style = dashboard_spacing),html.Div([html.Div(id = 'mode_title'),html.Div(dcc.Dropdown(id = 'comp_year',options = years,searchable = False,clearable = False, value='avg'))],style = dashboard_spacing),html.Div([html.H3('Interval'),dbc.RadioItems(id = 'date_interval',options = [
+                                                                                       {'label':'Take difference between 2020 and other years','value':True}],value = [True],inline = True,switch=True)],style = dashboard_spacing),html.Div([html.Div(id = 'mode_title'),html.Div(dcc.Dropdown(id = 'comp_year',options = years,searchable = False,clearable = False, value=2000))],style = dashboard_spacing),html.Div([html.H3('Interval'),dbc.RadioItems(id = 'date_interval',options = [
                                                                                        {'label':'Monthly','value':'monthly'},{'label':'Annual','value':'annual'}],value = 'monthly')],style = dashboard_spacing),html.Div([html.H3('Select Month', id = 'date_title'),dcc.Slider(id = 'date_range',min = 1, max = 12)
 
                                                                                                                                                                                                  ],style = dashboard_spacing)],id = "econ_mode")], style={'marginBottom': 50, 'marginTop': 25, 'marginLeft':15, 'marginRight':25}),width=2)
@@ -76,7 +76,7 @@ bottom_text = dbc.Col([dcc.Markdown('''---'''),html.Label([html.H6('Data Sources
 # old_sidebar = [dcc.Graph(id = 'model'),
 #                                         dbc.Row([html.Div(dcc.Graph(id = 'econ-model'),id ='econ_vis'),
 #                                                  html.Div([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
-#                                                                                        {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=['avg'])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
+#                                                                                        {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=[2000])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
 #                                                 ],id='ts_controls')])]
 
 old_layout = html.Div([navbar,dbc.Row([controls,heat_map, sidebar],style = {'width':'100%','height':'100%','display':'flex'}),dbc.Row(bottom_text)])
