@@ -6,17 +6,12 @@ import dash_table
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-from app import app
+from app import app, server
 from tabs import sidepanel, tab1
 from database import transforms
 import dash
-from dash.dependencies import Input, Output
-import dash_table
 import pandas as pd
 
-from app import app, server
-from tabs import sidepanel, tab1, tab2
-from database import transforms
 df = transforms.master_df
 app.layout = sidepanel.layout
 param_output = {'GHG':[{"label": "CO2", "value": "XCO2"},
