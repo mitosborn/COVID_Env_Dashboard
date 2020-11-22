@@ -40,6 +40,7 @@ with open('river_basin.json') as f:
     riverbasin = geojson.load(f)
 with open('watershed.json') as f:
     watershed = geojson.load(f)
+print("Got below JSON imports")
 superscript = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 mg3 = '(\u03BCg/m3)'.translate(superscript)
 aq_units = {'Ozone':'ppm','PM2.5':'μg/m3','NOx':'ppb','CO':'ppm','NO':'ppm'}
