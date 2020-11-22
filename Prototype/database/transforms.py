@@ -18,7 +18,7 @@ def get_data(file_dir, data_folder_name):
             dataframe.columns = dataframe.columns.str.lower()
             if(parameter.lower() in dataframe.columns.values):
                 dataframe = dataframe.rename(columns = {parameter.lower():'value'})
-            print(dataframe.columns)
+            #print(dataframe.columns)
             dataframe['date'] = pd.to_datetime(dataframe['date'])
             dataframe['fips'] = dataframe['fips'].astype(int).astype(str)
             dataframe = add_five_year_average(dataframe)
@@ -27,7 +27,7 @@ def get_data(file_dir, data_folder_name):
             print("Has no date col")
         data[parameter] = dataframe
     if(data_folder_name == 'ECON'):
-        print("Got here")
+        #print("Got here")
         #Read in Econ county point level data
         data['county_centers']['name'] = data['county_centers']['name'].str.replace(' County', '')
         data['county_centers'].drop(['usps', 'ansicode'], axis=1, inplace=True)
@@ -55,7 +55,7 @@ def form_dataframe(file_dir,folder_names):
 #Get address to current directory (This will not work in Jupyter NB) 
 file_dir = os.path.dirname(os.path.abspath(__file__))
 file_names = ['AQ','GHG','ECON']
-print(file_dir)
+#print(file_dir)
 master_df = form_dataframe(file_dir,file_names)
 
 
