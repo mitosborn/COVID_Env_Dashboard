@@ -55,6 +55,7 @@ def form_dataframe(file_dir,folder_names):
 #Get address to current directory (This will not work in Jupyter NB) 
 file_dir = os.path.dirname(os.path.abspath(__file__))
 file_names = ['AQ','GHG','ECON']
+print(file_dir)
 master_df = form_dataframe(file_dir,file_names)
 
 
