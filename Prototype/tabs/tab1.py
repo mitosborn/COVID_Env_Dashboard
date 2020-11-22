@@ -27,7 +27,10 @@ PAGE_SIZE = 50
 mapbox_key = 'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3MDBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
 # Import jsons
 directory = os.path.dirname(os.path.abspath(__file__))
+print("directory 1:"+directory)
 directory = os.path.join(directory,'jsons')
+print("directory 2:"+directory)
+
 os.chdir(directory)
 with open('counties.json') as f:
     counties = geojson.load(f)
