@@ -31,14 +31,14 @@ print("directory 1:"+directory)
 directory = os.path.join(directory,'jsons')
 print("directory 2:"+directory)
 
-os.chdir(directory)
-with open('counties.json') as f:
+#os.chdir(directory)
+with open(os.path.join(directory,'counties.json')) as f:
     counties = geojson.load(f)
-with open('major_aq.json') as f:
+with open(os.path.join(directory,'major_aq.json')) as f:
     majoraq = geojson.load(f)
-with open('river_basin.json') as f:
+with open(os.path.join(directory,'river_basin.json')) as f:
     riverbasin = geojson.load(f)
-with open('watershed.json') as f:
+with open(os.path.join(directory,'watershed.json')) as f:
     watershed = geojson.load(f)
 print("Got below JSON imports")
 superscript = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
