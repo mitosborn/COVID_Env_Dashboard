@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 import dash
 import plotly
@@ -11,7 +10,6 @@ import dash_bootstrap_components as dbc
 from app import app, server
 from tabs import sidepanel, tab1
 from database import transforms
-import dash
 import pandas as pd
 
 df = transforms.master_df
