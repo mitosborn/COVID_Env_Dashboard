@@ -8,7 +8,7 @@ import dash_table
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-from app import app
+from app import app, server 
 from tabs import sidepanel, tab1
 from database import transforms
 import pandas as pd
