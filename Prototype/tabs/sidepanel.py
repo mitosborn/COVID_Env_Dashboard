@@ -34,7 +34,7 @@ navbar = dbc.Navbar(
             dbc.Row(
                 [
                     dbc.Col(html.Img(src=app.get_asset_url('rice.png'), width = "190em",height="70em"),width=3),
-                    dbc.Col(dbc.NavbarBrand("Texas Environmental Impacts Due to COVID-19", className="h-100 d-inline-block", style={'font-size': '32px','font-family':'Trajan','color':'#00205B','font-weight':'bold','text-align':'justify'})),
+                    dbc.Col(dbc.NavbarBrand("TX Environmental Impacts Due to COVID-19", className="h-100 d-inline-block", style={'font-size': '32px','font-family':'Trajan','color':'#00205B','font-weight':'bold','text-align':'justify'})),
                 ],
                 align="center",
                 no_gutters=True,
