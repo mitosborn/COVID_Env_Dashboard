@@ -16,7 +16,9 @@ df = transforms.master_df
 #selection = {'Air Quality':'AQ','Greenhouse Gases':'GHG','Water Quality':'WQ','COVID Cases/Deaths':'ECON'}
 selection = {'Air Quality':'AQ','Greenhouse Gases':'GHG','COVID Cases/Deaths':'ECON'}
 dashboard_spacing = {'margin-bottom':'1.2em'}
-interval = [{'label':'Daily','value':'daily'},{'label':'Weekly','value':'weekly'},{'label':'Monthly','value':'monthly'},{'label':'Rolling 14 day average','value':'rolling'}]
+#interval = [{'label':'Daily','value':'daily'},{'label':'Weekly','value':'weekly'},{'label':'Monthly','value':'monthly'},{'label':'Rolling 14 day average','value':'rolling'}]
+interval = [{'label':'Daily','value':'daily'},{'label':'Weekly','value':'weekly'},{'label':'Monthly','value':'monthly'}]
+
 years = [{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'label': '2017', 'value': 2017},
                  {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},
                  {'label': '2015-2019 Average', 'value': 2000}]
@@ -24,7 +26,7 @@ AQ_source = 'https://www.tceq.texas.gov/agency/data/lookup-data/download-data.ht
 GHG_source = "https://science.jpl.nasa.gov/EarthScience/index.cfm"
 
 PLOTLY_LOGO = "https://cdn.freelogovectors.net/wp-content/uploads/2019/10/rice-university-logo.png"
-
+#This is working
 navbar = dbc.Navbar(
     [
         html.A(
@@ -47,7 +49,7 @@ navbar = dbc.Navbar(
 
 sidebar = dbc.Col(dbc.Container([dbc.Row(dbc.Col([dcc.Graph(id = 'model',style={'height':'100%'})]),style = {'height':'92%'}),dbc.Row([dbc.Col([html.Div([html.H5('Show Timeline'),dbc.RadioItems(id = 'time_lines',options = [
                                                                                        {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dbc.Checklist(id = 'years',options = years,value=[2000],inline=True)])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
-                                                ],style = {'height':'8%'},id='ts_controls')],style={"height":"90%"},fluid=True),width =5)
+                                                ],style = {'height':'8%'},id='ts_controls')],style={"height":"75vh"},fluid=True),width =5)
 
 controls = dbc.Col(
         html.Div([
@@ -79,6 +81,6 @@ bottom_text = dbc.Col([dcc.Markdown('''---'''),html.Label([html.H6('Data Sources
 #                                                                                        {'label':'Show','value':True},{'label':'Hide','value':False}],value = True)])]),dbc.Col(html.Div([html.H5("Compare Other Years"),dcc.Dropdown(id = 'years',options = years,searchable = False,multi = True,value=[2000])])),dbc.Col(html.Div([html.H5("Averaging Interval"),dbc.RadioItems(id = 'avg_type',options = interval,value = 'daily')]))
 #                                                 ],id='ts_controls')])]
 
-old_layout = html.Div([navbar,dbc.Row([controls,heat_map, sidebar],style = {'width':'100%','height':'100%','display':'flex'}),dbc.Row(bottom_text)])
+#old_layout = html.Div([navbar,dbc.Row([controls,heat_map, sidebar],style = {'width':'100%','height':'100%','display':'flex'}),dbc.Row(bottom_text)])
 
-layout = html.Div([navbar,dbc.Container([dbc.Row([controls,heat_map,sidebar],style = {'height':'80%','margin':'1'}),dbc.Row([bottom_text],style = {'height':'20%'})],style={"height": "100%","width":"100%"},fluid=True)],style={"height": "100vh","width":"100vw"})
+layout = html.Div([navbar,dbc.Container([dbc.Row([controls,heat_map,sidebar],style = {'height':'90%','margin':'1'}),dbc.Row([bottom_text],style = {'height':'10%'})],style={"height": "100%","width":"100%"},fluid=True)],style={"height": "100vh","width":"100vw"})

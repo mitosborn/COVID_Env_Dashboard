@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import dash
 import plotly
 import dash_core_components as dcc
@@ -8,15 +6,21 @@ import dash_table
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-from app import app, server 
+from app import app
 from tabs import sidepanel, tab1
 from database import transforms
+import dash
+from dash.dependencies import Input, Output
+import dash_table
 import pandas as pd
 
+from app import app, server
+from tabs import sidepanel, tab1, tab2
+from database import transforms
 df = transforms.master_df
 app.layout = sidepanel.layout
-param_output = {'GHG':[{"label": "CO2", "value": "XCO2"},
-                     {"label": "CH4", "value": "XCH4"}],
+param_output = {'GHG':[{"label": "CO2", "value": "CO2"},
+                     {"label": "CH4", "value": "CH4"}],
                 'AQ':[{"label": "NOx", "value": "NOx"},
                      {"label": "PM2.5", "value": "PM2.5"},
                       {"label": "CO", "value": "CO"},
@@ -80,7 +84,4 @@ def update_comp_chart(compare_mode):
 #     if sub_group == 'ECON':
 
 if __name__ == '__main__':
-    try:
-        app.run_server(debug=True)
-    except Exception as e:
-        print(e)
+    app.run_server(debug = True)

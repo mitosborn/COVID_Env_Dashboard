@@ -1,5 +1,3 @@
-
-
 import dash
 import plotly
 import dash_core_components as dcc
@@ -29,26 +27,22 @@ PAGE_SIZE = 50
 mapbox_key = 'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3MDBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
 # Import jsons
 directory = os.path.dirname(os.path.abspath(__file__))
-print("directory 1:"+directory)
 directory = os.path.join(directory,'jsons')
-print("directory 2:"+directory)
-
-#os.chdir(directory)
-with open(os.path.join(directory,'counties.json')) as f:
+os.chdir(directory)
+with open('counties.json') as f:
     counties = geojson.load(f)
-with open(os.path.join(directory,'major_aq.json')) as f:
+with open('major_aq.json') as f:
     majoraq = geojson.load(f)
-with open(os.path.join(directory,'river_basin.json')) as f:
+with open('river_basin.json') as f:
     riverbasin = geojson.load(f)
-with open(os.path.join(directory,'watershed.json')) as f:
+with open('watershed.json') as f:
     watershed = geojson.load(f)
-print("Got below JSON imports")
 superscript = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 mg3 = '(\u03BCg/m3)'.translate(superscript)
 aq_units = {'Ozone':'ppm','PM2.5':'μg/m3','NOx':'ppb','CO':'ppm','NO':'ppm'}
 econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulative deaths per 100k":'deaths/100k',"cumulative cases per 100k":'cases/100k'}
 wq_units = {"Dissolved Oxygen":"milligrams/Liter","Orthophosphate":"milligrams/Liter"}
-ghg_units = {"XCO2":"ppm","XCH4":"ppm"}
+ghg_units = {"CO2":"ppm","CH4":"ppm"}
 units = {"AQ":aq_units,"ECON":econ_units,"WQ":wq_units,"GHG":ghg_units}
 layout = dcc.Graph(id= 'cty_map',style={"height":'100%'})
 
@@ -107,16 +101,17 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
         trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
                                   marker=go.scattermapbox.Marker(symbol='circle', size=local_df[
                                       'cases/100k'],
-                                                                 sizemode='area',  sizeref=2. * max(local_df[
-                                                                                                                   'cases/100k']) / (
+                                                                 sizemode='area', sizeref=max(local_df['cases/100k']) / (
                                                                                                                   50 ** 2),
-                                                                 opacity=0.9, color='gray'),
+                                                                 opacity=0.7, color='gray'),
                                   name='Cases per 100k Population')
         #Deaths/100k
         trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
-                                  marker=go.scattermapbox.Marker(symbol='circle', size=10 * local_df[
+                                  marker=go.scattermapbox.Marker(symbol='circle', size=4*local_df[
                                       'deaths/100k'],
-                                                                 sizemode='area', opacity=0.4, color='royalblue'),
+                                                                 sizemode='area',sizeref=max(local_df['cases/100k']) / (
+                                                                                                                  50 ** 2),
+                                                                 opacity=0.4, color='royalblue'),
                                   name='Deaths per 100k Population')
 
         fig.add_trace(trace2)
@@ -128,7 +123,6 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
 
     else:
         year = comp_year
-        print("HERSERERSRE")
         print(parameter)
         print(sub_group)
         local_df = df[sub_group][parameter].copy()
@@ -190,15 +184,15 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
     #Make title
     if take_diff:
         if comp_type == 'annual':
-            title = (lambda x,a: 'Annual Difference of {} between {} and 2020'.format(a,comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
+            title = 'Annual Difference of {} between {} and 2020'.format(parameter,comp_year)
         else:
-            title = (lambda x,a: 'Annual Difference of {} between {} {} and {} 2020'.format(a,comp_month[0:3],comp_year,comp_month[0:3]) if x not in 'ECON' else a.capitalize() + ' as of '+date.strftime("%B %d, %Y"))(sub_group,parameter)
+            title = 'Annual Difference of {} between {} {} and {} 2020'.format(parameter,comp_month[0:3],comp_year,comp_month[0:3])
 
     else:
         if comp_type == 'annual':
-            title = (lambda x, a: 'Annual Average of {} in {}'.format(a, str(year)) if x not in 'ECON' else a.capitalize() + ' as of ' + str(year))(sub_group, parameter)
+            title = 'Annual Average of {} in {}'.format(parameter, str(comp_year))
         else:
-            title = (lambda x,a: 'Annual Average of {} in {} {}'.format(a,comp_month[0:3], comp_year) if x not in 'ECON' else a.capitalize() + ' as of '+ str(year))(sub_group,parameter)
+            title = 'Annual Average of {} in {} {}'.format(parameter,comp_month[0:3], comp_year)
 
 
     fig.update_layout(title_text= title,autosize = True,
@@ -260,8 +254,11 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
         max_val = 0
         min_val = float('inf')
         for year, frame in dataframes.items():
-            max_val = max(max_val, max(frame['value']))
-            min_val = min(min_val, min(frame['value']))
+            try:
+                max_val = max(max_val, max(frame['value']))
+                min_val = min(min_val, min(frame['value']))
+            except:
+                print("Empty df")
             fig.add_trace(go.Scatter(
                 x=frame['date'],
                 y=frame['value'],
