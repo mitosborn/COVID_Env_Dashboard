@@ -9,10 +9,10 @@ from dash.dependencies import Input, Output
 
 from app import app
 
-from tabs import tab1, tab2
-from database import transforms
+from tabs import plots, tab2
+from database import data_importer
 
-df = transforms.master_df
+df = data_importer.master_df
 selection = {'Air Quality':'AQ','Greenhouse Gases':'GHG','Water Quality':'WQ','Economics':'ECON'}
 
 layout = html.Div([

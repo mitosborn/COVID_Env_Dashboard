@@ -8,9 +8,9 @@ import pandas as pd
 from dash.dependencies import Input, Output
 
 from app import app 
-from database import transforms
+from database import data_importer
 
-df = transforms.master_df
+df = data_importer.master_df
 
 PAGE_SIZE = 50
 #  html.Div([

@@ -1,19 +1,9 @@
-import dash
-import plotly
 import dash_core_components as dcc
-import dash_html_components as html 
-import dash_bootstrap_components as dbc 
-import dash_table
 import pandas as pd
-from datetime import datetime
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from app import app 
-from database import transforms
-import json
-from urllib.request import urlopen
-from datetime import datetime as dt
-import re
+from database import data_importer
 from sklearn.linear_model import LinearRegression
 import geojson
 import plotly.express as px
@@ -21,7 +11,7 @@ import os
 import calendar
 from plotly.subplots import make_subplots
 import numpy as np
-df = transforms.master_df
+df = data_importer.master_df
 
 PAGE_SIZE = 50
 mapbox_key = 'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3MDBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
@@ -49,8 +39,6 @@ layout = dcc.Graph(id= 'cty_map',style={"height":'100%'})
 @app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')
                                           ,Input('mode','value')])
 def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,take_diff):
-    # print(df[sub_group].keys())
-    # print(comp_year)
     print(type(take_diff))
     print(take_diff)
     if sub_group == 'ECON':
@@ -126,15 +114,6 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
         print(parameter)
         print(sub_group)
         local_df = df[sub_group][parameter].copy()
-
-        # # Create 2015-2019 df
-        # if year == 2000:
-        #     dataframe = local_df[local_df['date'].dt.year.isin([2015, 2016, 2017, 2018, 2019])].copy()
-        #     dataframe['date'] = dataframe['date'].apply(lambda x: x.replace(year=2000))
-        #     dataframe = dataframe.groupby(['date', 'fips', 'county']).mean().reset_index()
-        #     local_df = local_df.append(dataframe)
-
-
 
         if take_diff:
             current = local_df[local_df['date'].dt.year == 2020].copy()
@@ -327,13 +306,13 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             row += 1
 
         fig.append_trace(return_scatter_figure(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title)['data'][0], row= row+1, col=1)
-        fig.append_trace(get_trend_line(x_val, 'cases/100k',x_title, 'COVID Cases/100k', case_title), row= row+1, col=1)
+        fig.append_trace(get_trend_line(x_val, 'cases/100k'), row= row+1, col=1)
 
         fig.update_xaxes(title_text=x_title, row=row+1, col=1)
         fig.update_yaxes(title_text= 'COVID Cases/100k', row=row+1, col=1)
         row += 1
         fig.append_trace(return_scatter_figure(x_val, 'deaths/100k', x_title, 'COVID Deaths/100k', death_title)['data'][0], row=row+1, col=1)
-        fig.append_trace(get_trend_line(x_val, 'deaths/100k', x_title, 'COVID Deaths/100k', death_title), row=row+1, col=1)
+        fig.append_trace(get_trend_line(x_val, 'deaths/100k'), row=row+1, col=1)
 
         fig.update_xaxes(title_text=x_title, row=row + 1, col=1)
         fig.update_yaxes(title_text='COVID Deaths/100k', row=row + 1, col=1)
@@ -355,38 +334,48 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             font_size=20
         )
     return fig
+'''
+return_scatter_figure creates a scatter plot comparing the data of the inputted
+parameters.
 
+Inputs:
+    x_parameter,y_parameter: Explanatory and dependent variables
+    x_title,y_title,title: Titles of the x_axis, y_axis, and plot
+Return:
+    Scatterplot containing data from the x and y parameters with the specified
+    labels
+'''
 def return_scatter_figure(x_parameter,y_parameter,x_title,y_title,title):
     local_df = df['ECON']['econ_data']
     names = {x_parameter: x_title, y_parameter: y_title}
     print(names)
     fig = px.scatter(local_df, x=x_parameter, y=y_parameter, hover_name='county', labels=names, title=title)
-
-    X = np.array(local_df[x_parameter]).reshape(-1, 1)
-
-    model = LinearRegression()
-    model.fit(X, np.array(local_df[y_parameter]))
-
-    x_range = np.linspace(X.min(), X.max(), 100)
-    y_range = model.predict(x_range.reshape(-1, 1))
-    print(x_range,y_range)
-    #fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
-    #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
     return fig
 
-def get_trend_line(x_parameter,y_parameter,x_title,y_title,title):
+'''
+get_trend_line creates a scatter plot containing a linear regression
+from the data representing the inputted parameters 
+
+Inputs:
+    x_parameter,y_parameter: Explanatory and dependent variables
+
+Returns: 
+    Scatter plot with a linear regression line 
+
+'''
+def get_trend_line(x_parameter,y_parameter):
     local_df = df['ECON']['econ_data']
     X = np.array(local_df[x_parameter]).reshape(-1, 1)
 
+    #Fit data to model
     model = LinearRegression()
     model.fit(X, np.array(local_df[y_parameter]))
 
+    #Reform linear regression for plotting
     x_range = np.linspace(X.min(), X.max(), 100)
     y_range = model.predict(x_range.reshape(-1, 1))
-    print(x_range,y_range)
-    #fig = px.line(x=x_range, y=y_range,labels = {'x':x_title,'y':y_title},color='red')
+
+    #Create scatter plot containing linear regression
     fig = go.Scatter(x=x_range, y=y_range,mode='lines', line=dict(color="#eb3434"),name = 'Regression')
 
-    #fig.update_layout(autosize = True,margin=dict(t=40,l=80,r=180,b=30))
-    #fig.update_layout(style = {'padding': '6px 0px 0px 8px'})
     return fig

@@ -2,14 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="108f98c1-9999-4123-8da4-d20445133b86" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Prototype/Procfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Prototype/database/WQ/CO.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Prototype/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prototype/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/Prototype/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prototype/database/transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/Prototype/database/transforms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prototype/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/Prototype/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prototype/tabs/sidepanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Prototype/tabs/sidepanel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prototype/tabs/tab1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Prototype/tabs/tab1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/data_importer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/sidepanel-checkpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/sidepanel-checkpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab1-checkpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab1-checkpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab2-checkpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab2-checkpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tabs/sidepanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/sidepanel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tabs/tab1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/plots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tabs/tab2.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +35,28 @@
       <recent name="$PROJECT_DIR$/Prototype" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.index">
+    <configuration name="index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="data_visualization" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/index.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="tab1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="data_visualization" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -58,6 +80,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.index" />
         <item itemvalue="Python.tab1" />
       </list>
     </recent_temporary>
@@ -76,21 +99,33 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1771" height="287" key="GridCell.Tab.0.bottom" timestamp="1606006793325">
-      <screen x="0" y="23" width="1792" height="1048" />
+    <state x="634" y="296" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1611516489062">
+      <screen x="0" y="25" width="1792" height="1040" />
+    </state>
+    <state x="634" y="296" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.25.1792.1040/1792.25.1920.1055@0.25.1792.1040" timestamp="1611516489062" />
+    <state width="1771" height="282" key="GridCell.Tab.0.bottom" timestamp="1611518164866">
+      <screen x="0" y="25" width="1792" height="1040" />
     </state>
     <state width="1771" height="287" key="GridCell.Tab.0.bottom/0.23.1792.1048/1792.23.1920.1057@0.23.1792.1048" timestamp="1606006793325" />
-    <state width="1771" height="287" key="GridCell.Tab.0.center" timestamp="1606006793324">
-      <screen x="0" y="23" width="1792" height="1048" />
+    <state width="1771" height="282" key="GridCell.Tab.0.bottom/0.25.1792.1040/1792.25.1920.1055@0.25.1792.1040" timestamp="1611518164866" />
+    <state width="1771" height="282" key="GridCell.Tab.0.center" timestamp="1611518164865">
+      <screen x="0" y="25" width="1792" height="1040" />
     </state>
     <state width="1771" height="287" key="GridCell.Tab.0.center/0.23.1792.1048/1792.23.1920.1057@0.23.1792.1048" timestamp="1606006793324" />
-    <state width="1771" height="287" key="GridCell.Tab.0.left" timestamp="1606006793324">
-      <screen x="0" y="23" width="1792" height="1048" />
+    <state width="1771" height="282" key="GridCell.Tab.0.center/0.25.1792.1040/1792.25.1920.1055@0.25.1792.1040" timestamp="1611518164865" />
+    <state width="1771" height="282" key="GridCell.Tab.0.left" timestamp="1611518164865">
+      <screen x="0" y="25" width="1792" height="1040" />
     </state>
     <state width="1771" height="287" key="GridCell.Tab.0.left/0.23.1792.1048/1792.23.1920.1057@0.23.1792.1048" timestamp="1606006793324" />
-    <state width="1771" height="287" key="GridCell.Tab.0.right" timestamp="1606006793325">
-      <screen x="0" y="23" width="1792" height="1048" />
+    <state width="1771" height="282" key="GridCell.Tab.0.left/0.25.1792.1040/1792.25.1920.1055@0.25.1792.1040" timestamp="1611518164865" />
+    <state width="1771" height="282" key="GridCell.Tab.0.right" timestamp="1611518164866">
+      <screen x="0" y="25" width="1792" height="1040" />
     </state>
     <state width="1771" height="287" key="GridCell.Tab.0.right/0.23.1792.1048/1792.23.1920.1057@0.23.1792.1048" timestamp="1606006793325" />
+    <state width="1771" height="282" key="GridCell.Tab.0.right/0.25.1792.1040/1792.25.1920.1055@0.25.1792.1040" timestamp="1611518164866" />
+    <state x="561" y="256" width="670" height="676" key="search.everywhere.popup" timestamp="1611518078962">
+      <screen x="0" y="25" width="1792" height="1040" />
+    </state>
+    <state x="561" y="256" width="670" height="676" key="search.everywhere.popup/0.25.1792.1040/1792.25.1920.1055@0.25.1792.1040" timestamp="1611518078962" />
   </component>
 </project>

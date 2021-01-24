@@ -7,9 +7,9 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 import dash_table
 from app import app
-from database import transforms
+from database import data_importer
 
-df = transforms.df
+df = data_importer.df
 
 layout = html.Div(
             id='table-paging-with-graph-container',
