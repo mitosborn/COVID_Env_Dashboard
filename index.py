@@ -1,6 +1,6 @@
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from app import app
+from app import app, server
 from tabs import sidepanel
 from database import data_importer
 

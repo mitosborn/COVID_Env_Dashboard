@@ -3,14 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="108f98c1-9999-4123-8da4-d20445133b86" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/data_importer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/sidepanel-checkpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/sidepanel-checkpoint.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab1-checkpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab1-checkpoint.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab2-checkpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/.ipynb_checkpoints/tab2-checkpoint.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tabs/sidepanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/sidepanel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tabs/tab1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tabs/plots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tabs/tab2.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
