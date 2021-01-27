@@ -16,29 +16,21 @@ df = data_importer.master_df
 PAGE_SIZE = 50
 mapbox_key = 'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3MDBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
 # Import jsons
-directory = os.path.dirname(os.path.abspath(__file__))
-directory = os.path.join(directory,'jsons')
-os.chdir(directory)
-with open('counties.json') as f:
+root = os.path.dirname(os.path.abspath(__file__))
+base = os.path.join(root,'jsons')
+with open(os.path.join(base, 'counties.json')) as f:
     counties = geojson.load(f)
-with open('major_aq.json') as f:
-    majoraq = geojson.load(f)
-with open('river_basin.json') as f:
-    riverbasin = geojson.load(f)
-with open('watershed.json') as f:
-    watershed = geojson.load(f)
 superscript = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 mg3 = '(\u03BCg/m3)'.translate(superscript)
 aq_units = {'Ozone':'ppm','PM2.5':'μg/m3','NOx':'ppb','CO':'ppm','NO':'ppm'}
 econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulative deaths per 100k":'deaths/100k',"cumulative cases per 100k":'cases/100k'}
-wq_units = {"Dissolved Oxygen":"milligrams/Liter","Orthophosphate":"milligrams/Liter"}
 ghg_units = {"CO2":"ppm","CH4":"ppm"}
-units = {"AQ":aq_units,"ECON":econ_units,"WQ":wq_units,"GHG":ghg_units}
+units = {"AQ":aq_units,"ECON":econ_units,"GHG":ghg_units}
 layout = dcc.Graph(id= 'cty_map',style={"height":'100%'})
 
-@app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('wtr_layer','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')
+@app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')
                                           ,Input('mode','value')])
-def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,take_diff):
+def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
     print(type(take_diff))
     print(take_diff)
     if sub_group == 'ECON':
@@ -180,16 +172,6 @@ def get_map(parameter, sub_group, option_water,comp_type,comp_year,comp_month,ta
                                   zoom=4.75,layers=[{'sourcetype': 'geojson', 'opacity': .1,
                                            'source': counties, 'type': "fill", 'color': None}]
                                   ))
-    # add aquifer polygons
-    if option_water == 'Major Aquifers':
-        fig.update_layout(mapbox=dict(layers=[{'sourcetype': 'geojson', 'opacity': 0.6,
-                                               'source': majoraq, 'type': "fill", 'color': "royalblue"}]))
-    if option_water == 'River Basins':
-        fig.update_layout(mapbox=dict(layers=[{'sourcetype': 'geojson', 'opacity': 0.6,
-                                               'source': riverbasin, 'type': "line", 'color': "royalblue"}]))
-    if option_water == 'Watersheds':
-        fig.update_layout(mapbox=dict(layers=[{'sourcetype': 'geojson', 'opacity': 0.6,
-                                               'source': watershed, 'type': "line", 'color': "royalblue"}]))
     return fig
 
 

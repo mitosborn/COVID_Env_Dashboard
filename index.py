@@ -127,4 +127,4 @@ def update_year_comparison_selector(compare_mode):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=3000, host = '127.0.0.1')
