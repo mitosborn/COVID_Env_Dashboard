@@ -27,7 +27,16 @@ econ_units ={"cumulative cases":'cases',"cumulative deaths": 'deaths',"cumulativ
 ghg_units = {"CO2":"ppm","CH4":"ppm"}
 units = {"AQ":aq_units,"ECON":econ_units,"GHG":ghg_units}
 layout = dcc.Graph(id= 'cty_map',style={"height":'100%'})
+"""
+get_map creates the central heat map. Returns map of Texas populated with user specified parameters.
 
+Inputs:
+    parameter: Current parameter selected
+    sub_group: One of the following values [AQ, GHG, ECON]
+    comp_type: Decides whether data displayed is per month or per year. Output of 'Interval' radio  
+    comp_month: Selected month of data to be displayed if user selects 'Monthly' interval
+    take_diff: Boolean deciding to display 2020 - selected year or only the selected year
+"""
 @app.callback(Output('cty_map','figure'),[Input('parameter','value'),Input('sub-group','value'),Input('date_interval','value'),Input('comp_year','value'),Input('date_range','value')
                                           ,Input('mode','value')])
 def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
@@ -37,15 +46,18 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
         local_df = df['ECON']['econ_data']
         print(local_df.columns)
         fig = go.Figure()
+        text_template = '<b>'+local_df['county'] + ' County</b><br>Cases/100k: ' + local_df['cases/100k'].round(2).astype(str)+ '<br>Deaths/100k: ' + local_df['deaths/100k'].round(2).astype(str)
+
         if parameter == 'pm2.5':
+            text_template += '<br>PM2.5: ' + local_df['pm2.5'].round(2).astype(str) +' '+ mg3+'<extra></extra>'
             trace = go.Choroplethmapbox(geojson=counties,
                                         locations=local_df['fips'].astype(str),
                                         z=local_df['pm2.5'],
                                         colorscale='oranges',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
                                         marker_line_color='white', name='pm 2.5 '+mg3, featureidkey= 'properties.FIPS',
-                                        colorbar_title='PM 2.5 (mg/m<sup>3</sup>)', colorbar_titlefont=dict(size=11),
-                                        colorbar_tickfont=dict(size=11))
+                                        colorbar_title='PM 2.5 ' + mg3, colorbar_titlefont=dict(size=11),
+                                        colorbar_tickfont=dict(size=11),hovertemplate= text_template)
 
             fig.add_trace(trace)
             fig.update_layout(showlegend=True, title_text='Historical PM2.5 and COVID Incidence',
@@ -58,6 +70,7 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
                                           zoom=5.75))
         #Comparing race vs Cases/Deaths
         else:
+            text_template += '<br>Population Minority: ' + local_df['bah'].round(2).astype(str) +'%<extra></extra>'
             trace = go.Choroplethmapbox(geojson=counties,
                                         locations=local_df['fips'].astype(str),
                                         z=local_df['bah'],featureidkey= 'properties.FIPS',
@@ -65,7 +78,7 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
                                         marker_line_color='white', name='Percent Minority: ',
                                         colorbar_title='Percentage', colorbar_titlefont=dict(size=11),
-                                        colorbar_tickfont=dict(size=11))
+                                        colorbar_tickfont=dict(size=11),hovertemplate = text_template)
 
             fig.add_trace(trace)
 
@@ -77,6 +90,8 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
                               mapbox=dict(center=dict(lat=31.3915, lon=-100.1707),
                                           accesstoken=mapbox_key, style="streets",
                                           zoom=5.75))
+        print("These columns here")
+        print(local_df.columns)
         #Cases/100k
         trace2 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
                                   marker=go.scattermapbox.Marker(symbol='circle', size=local_df[
@@ -84,7 +99,7 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
                                                                  sizemode='area', sizeref=max(local_df['cases/100k']) / (
                                                                                                                   50 ** 2),
                                                                  opacity=0.7, color='gray'),
-                                  name='Cases per 100k Population')
+                                  name='Cases per 100k Population', hoverinfo = 'skip')
         #Deaths/100k
         trace3 = go.Scattermapbox(lon=local_df['intptlong'], lat=local_df['intptlat'], mode='markers',
                                   marker=go.scattermapbox.Marker(symbol='circle', size=4*local_df[
@@ -92,7 +107,7 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
                                                                  sizemode='area',sizeref=max(local_df['cases/100k']) / (
                                                                                                                   50 ** 2),
                                                                  opacity=0.4, color='royalblue'),
-                                  name='Deaths per 100k Population')
+                                  name='Deaths per 100k Population', hoverinfo = 'skip')
 
         fig.add_trace(trace2)
         fig.add_trace(trace3)
@@ -138,13 +153,13 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
     title = (lambda x,a: parameter+' ('+units[x][a]+')' if x not in 'ECON' else 'COVID '+units[x][a].capitalize())(sub_group,parameter)
     trace = go.Choroplethmapbox(geojson=counties,
                                 locations=local_df['fips'].astype(str),
-                                z=local_df['value'],
+                                z=local_df['value'].round(2),
                                 colorscale='reds',featureidkey= 'properties.FIPS',
                                 colorbar_thickness=20,
                                 text=local_df['county'],
                                 marker_line_color='white', customdata=local_df['fips'],
-                                hovertemplate='<b>County</b>: <b>%{text}</b>' +
-                                              '<br> <b>Value </b>: %{z}<br>' + '<extra></extra>',
+                                hovertemplate='<b>%{text} County</b>' +
+                                              '<br><b>'+parameter +'</b>: %{z} '+units[sub_group][parameter] + '<extra></extra>',
                                 colorbar_title_text=title)
     print("Got here")
     fig = go.Figure(data=trace)
@@ -174,7 +189,20 @@ def get_map(parameter, sub_group,comp_type,comp_year,comp_month,take_diff):
                                   ))
     return fig
 
+'''
+display_click_data returns the timeseries plot on the right side of the dashboard
 
+Inputs:
+    clickData: FIPS code of county selected by user
+    parameter: Parameter of data to be shown
+    sub_group: Group [AQ, GHG, ECON] data comes from
+    show_lines: Boolean to show lockdown begin and lockdown end lines
+    years: Years to display on plot
+    avg_type: [Daily, Weekly, Monthly] averaging types
+
+Returns:
+    Plot with the specified parameters 
+'''
 @app.callback(Output('model','figure'),[Input('cty_map', 'clickData'),Input('parameter','value'),Input('sub-group','value'),Input('time_lines','value'),Input('years','value'),
                                         Input('avg_type','value')])
 def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type):
@@ -214,19 +242,27 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
                        2019:{'label':'2019','color':'#ED0925'}, 2018:{'label':'2018','color':'#09ED10'},2017:{'label':'2017','color':'#ED09ED'},2016:{'label':'2016','color':'#F6F79D'},2015:{'label':'2015','color':'#7EF3E5'},2000:{'label':'Avg 2015-2019','color':'#94B8D5'}}
         max_val = 0
         min_val = float('inf')
+        #Add selected years to the plot
         for year, frame in dataframes.items():
+            print("Columns are for the scatter:")
+            print(frame.columns)
+
+            #name_template = 'Year: ' + year +'<br>'+parameter+': '
+
+            #Determine max and min of all data so we can set the axis without unused space
             try:
                 max_val = max(max_val, max(frame['value']))
                 min_val = min(min_val, min(frame['value']))
+                fig.add_trace(go.Scatter(
+                    x=frame['date'],
+                    y=frame['value'],
+                    name=label_style[year]['label'],
+                    mode='lines',
+                    line_color=label_style[year]['color'], hoverinfo='skip', hovertemplate='<b>'+label_style[year]['label']+'</b><br>Value: '+frame['value'].round(2).astype(str) +'<extra></extra>'
+                ))
             except:
                 print("Empty df")
-            fig.add_trace(go.Scatter(
-                x=frame['date'],
-                y=frame['value'],
-                name=label_style[year]['label'],
-                mode='lines',
-                line_color=label_style[year]['color']
-            ))
+
         fig.update_layout(xaxis_title='Time',
                           yaxis_title=parameter + ' Concentration (' + units[sub_group][parameter] + ')',
                           margin=dict(t=70, l=10, b=10, r=10))
@@ -237,6 +273,7 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
         min_val = .989 * min_val
         fig.layout.yaxis.update(range=[min_val, max_val])
 
+        #Add opening and closure lines to graph if 'show timeline' is selected
         if show_lines:
             opening = 'State<br>Opening'
             closure = "State<br>Closure"
@@ -256,6 +293,7 @@ def display_click_data(clickData,parameter, sub_group,show_lines,years,avg_type)
             ))
 
         return fig
+    #If ECON is selected, display two scatterplots on the right side
     elif sub_group == 'ECON':
         row = 0
         if parameter == 'pm2.5':
