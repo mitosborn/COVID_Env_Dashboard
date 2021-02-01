@@ -24,7 +24,7 @@ AQ_source = 'https://www.tceq.texas.gov/agency/data/lookup-data/download-data.ht
 GHG_source = "https://science.jpl.nasa.gov/EarthScience/index.cfm"
 RICE_LOGO = "https://cdn.freelogovectors.net/wp-content/uploads/2019/10/rice-university-logo.png"
 
-# Define the Navbar
+# ------------------------------- NAV BAR -------------------------------
 navbar = dbc.Navbar(
     [
         html.A(
@@ -52,6 +52,8 @@ navbar = dbc.Navbar(
     dark=False, style={"position": "sticky", "top": "0", "width": "100%", "background": "#fff", "z-index": "2000"}
 )
 
+
+# ------------------------------- TIME SERIES PLOT -------------------------------
 # Define the time series plot that resides on the right side of the dashboard
 timeline_toggle = dbc.Col([html.Div([html.H5('Show Timeline'), dbc.RadioItems(id='time_lines', options=[
                           {'label': 'Show', 'value': True}, {'label': 'Hide', 'value': False}], value=True)])])
@@ -61,9 +63,13 @@ select_averaging_interval = dbc.Col(html.Div([html.H5(
     "Averaging Interval"), dbc.RadioItems(id='avg_type', options=interval, value='daily')]))
 
 # Put all the components together
-time_series = dbc.Col(dbc.Container([dbc.Row(dbc.Col([dcc.Graph(id='model', style={'height': '100%'})]), style={'height': '92%'}), dbc.Row(
-    [timeline_toggle, timeline_year_selector, select_averaging_interval], style={'height': '8%'}, id='ts_controls')], style={"height": "75vh"}, fluid=True), width=5)
+time_series = dbc.Col(
+    dbc.Container([dbc.Row(dbc.Col([dcc.Graph(id='model', style={'height': '100%'})]), style={'height': '92%'}),
+                   dbc.Row([timeline_toggle, timeline_year_selector, select_averaging_interval], style={'height': '8%'}, id='ts_controls')],
+                  style={"height": "75vh"},
+                  fluid=True), width=8, lg=5)
 
+# ------------------------------- LEFT CONTROL PANEL -------------------------------
 # Define controls on left side of dashboard
 select_env_group = html.Div([html.H3('Select group'), dcc.Dropdown(
     id='sub-group',
@@ -90,11 +96,18 @@ select_month = html.Div([html.H3('Select Month', id='date_title'), dcc.Slider(
     id='date_range', min=1, max=12)], style=dashboard_spacing)
 
 # Combine all controls into a control panel on the left side of the dashboard
-controls = dbc.Col(html.Div([select_env_group,
-                             select_parameter, select_water_layers, html.Div([select_difference_mode, html.Div([html.Div(id='mode_title'), select_comp_year], style=dashboard_spacing), select_interval, select_month], id="econ_mode")], style={'marginBottom': 50, 'marginTop': 25, 'marginLeft': 15, 'marginRight': 25}), width=2)
+controls = dbc.Col(html.Div([select_env_group, select_parameter, select_water_layers,
+                             html.Div([select_difference_mode,
+                                       html.Div(
+                                           [html.Div(id='mode_title'), select_comp_year], style=dashboard_spacing),
+                                       select_interval, select_month], id="econ_mode")],
+                            style={'marginBottom': 50, 'marginTop': 25, 'marginLeft': 15, 'marginRight': 25}),
+                   width=4, lg=2)
 
+
+# ------------------------------- HEAT MAP -------------------------------
 # Import heat map from tab1
-heat_map = dbc.Col(plots.layout, width=5)
+heat_map = dbc.Col(plots.layout, width=8, lg=5)
 
 # Define text that shows data sources
 bottom_text = dbc.Col([dcc.Markdown('''---'''), html.Label([html.H6('Data Sources'), ' Air Quality: ', html.A('TCEQ', href=AQ_source, target="_blank"), ', Greenhouse Gases: ', html.A('NASA', href=GHG_source, target="_blank")])
