@@ -66,7 +66,7 @@ modal = html.Div(
             centered=True,
             scrollable=True,
             size="xl",
-            style={"margin-top": "8rem"}
+            style={"margin-top": "10rem"}
         ),
     ]
 )
@@ -115,7 +115,7 @@ select_averaging_interval = dbc.Col(html.Div([html.H5(
 time_series = dbc.Col(
     dbc.Container([dbc.Row(dbc.Col([dcc.Graph(id='model', style={'height': '100%'})]), style={'height': '92%'}),
                    dbc.Row([timeline_toggle, timeline_year_selector, select_averaging_interval], style={'height': '8%'}, id='ts_controls')],
-                  style={"height": "75vh"},
+                  style={"responsive": "true"},  # "height": "75vh",
                   fluid=True), width=8, lg=5)
 
 # ------------------------------- LEFT CONTROL PANEL -------------------------------
