@@ -57,6 +57,12 @@ modal = html.Div(
                                             - Greenhouse Gases: [National Aeronautics and Space Administration (NASA)](https://science.jpl.nasa.gov/EarthScience/index.cfm)
                                             - COVID Cases/Deaths: [Texas Health and Human Services](https://dshs.texas.gov/coronavirus/AdditionalData.aspx)
 
+
+                                            #### Contact Us
+                                            * Sylvia Dee: sylvia.dee@rice.edu
+                                                * [Website](https://sylviadeeclimate.org/)
+                                            * If you have any questions or feedback you would like to provide regarding the website, please fill out 
+                                            this [form https://forms.gle/giV2igcs44U7GWFo9](https://forms.gle/giV2igcs44U7GWFo9).
                                     
                                             ''')),
                 dbc.ModalFooter(
