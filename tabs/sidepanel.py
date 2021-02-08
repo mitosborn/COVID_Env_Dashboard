@@ -37,18 +37,19 @@ modal = html.Div(
                                             This dashboard was created as part of a research project investigating the envrionmental and socioeconomic impacts of the COVID-19 pandemic
                                             at Rice University.   
                                             
-                                            The data shown was collected during a period of March 2020 - August 1, 2020. 
+                                            The data shown was collected during a period of March 2020 - August 1, 2020.\n
                                         
-
                                             #### How to use
-                                            1. Select a group the top selector
-                                                * If you selected Air Quality or Greenhouse Gases, select an environmental indicator using the 'Select Parameter' dropdown
-                                                    1. Using the Mode selector, select if you'd like to see view your selected year or the difference between 2020 and your selected year
-                                                    2. Select if you'd like to see data on a monthly or yearly interval
-                                                    3. View the results on the heatmap and click on counties of interest to see a timeseries breakdown of emissions for a county
+                                            1. Select a group the top selector.
+                                                * If Air Quality or Greenhouse Gases is selected, select an environmental indicator using the 'Select Parameter' dropdown.
+                                                    * The *Mode Selector* allows you to view the selected year or the difference between 2020 and the selected year on the heatmap.
+                                                    * Under *Interval*, you can select whether you'd like to see data on a monthly or yearly interval. If the interval is monthly, you can choose to 
+                                                    view data for a single month frmo January - July.
+                                                    * View the results of your selection on the heatmap. 
+                                                    * Click on a county to see a timeseries breakdown of emissions for the selected county.
                                                 
-                                                * If you selected COVID Cases/Deaths, select either Race/Ethnicity to see a county breakdown of COVID incidence vs Race/Ethnicity or
-                                                select PM2.5 to see how PM2.5 concentration relates to COVID incidence
+                                                * If  COVID Cases/Deaths is selected, select either Race/Ethnicity to see a county breakdown of COVID incidence vs Race/Ethnicity, or 
+                                                select PM2.5 to see how PM2.5 concentration relates to COVID incidences.
                                             
 
                                             #### Data sources
