@@ -26,17 +26,20 @@ RICE_LOGO = "https://cdn.freelogovectors.net/wp-content/uploads/2019/10/rice-uni
 
 modal = html.Div(
     [
-        dbc.Button(dcc.Markdown('''##### About'''), id="open",className="mr-1"),
+        dbc.Button(dcc.Markdown('''##### About'''),
+                   id="open", className="mr-1"),
         dbc.Modal(
             [
                 dbc.ModalHeader(dcc.Markdown('''### About''')),
                 dbc.ModalBody(dcc.Markdown('''
-                                            ##### Background
+                                            #### Background
                                             This dashboard was created as part of a research project investigating the envrionmental and socioeconomic impacts of the COVID-19 pandemic
                                             at Rice University.   
                                             
                                             The data shown was collected during a period of March 2020 - August 1, 2020. 
-                                            ##### How to use
+                                        
+
+                                            #### How to use
                                             1. Select a group the top selector
                                                 * If you selected Air Quality or Greenhouse Gases, select an environmental indicator using the 'Select Parameter' dropdown
                                                     1. Using the Mode selector, select if you'd like to see view your selected year or the difference between 2020 and your selected year
@@ -47,18 +50,21 @@ modal = html.Div(
                                                 select PM2.5 to see how PM2.5 concentration relates to COVID incidence
                                             
 
-                                            ##### Data sources
+                                            #### Data sources
                                             - [Air Quality](https://www.tceq.texas.gov/agency/data/lookup-data/download-data.html)
                                             - [Greenhouse Gases](https://science.jpl.nasa.gov/EarthScience/index.cfm)
                                             - [COVID Cases/Deaths](https://dshs.texas.gov/coronavirus/AdditionalData.aspx)
 
                                     
-                                            ''') ),
+                                            ''')),
                 dbc.ModalFooter(
                     dbc.Button("Close", id="close", className="ml-auto")
                 ),
             ],
-            id="modal", centered= True
+            id="modal",
+            centered=True,
+            scrollable=True,
+            size="xl",
         ),
     ]
 )
@@ -86,7 +92,7 @@ navbar = dbc.Navbar(
             ),
             href="https://earthscience.rice.edu/",  # External link to Rice ESCI website
         ),
-        #dbc.NavbarToggler(id="navbar-toggler"),
+        # dbc.NavbarToggler(id="navbar-toggler"),
         modal
     ],
     color="light",
@@ -116,7 +122,9 @@ select_env_group = html.Div([html.H3('Select group'), dcc.Dropdown(
     id='sub-group',
     options=[{'label': i, 'value': selection[i]} for i in selection.keys()],
     searchable=False, clearable=False, value='AQ')], style=dashboard_spacing)
-select_parameter = html.Div([html.H3('Select Parameter'), dcc.Dropdown(id='parameter', searchable=False, options=[{"label": "Air Quality - NOx", "value": "NOx"}], clearable=False, value='NOx')
+select_parameter = html.Div([html.H3('Select Parameter'),
+                             dcc.Dropdown(id='parameter', searchable=False, options=[
+                                          {"label": "Air Quality - NOx", "value": "NOx"}], clearable=False, value='NOx')
                              ], style=dashboard_spacing)
 select_water_layers = html.Div([html.H3('Layers', id='water_title'), dbc.RadioItems(id='wtr_layer', options=[
     {'label': 'None', 'value': 'None'},
