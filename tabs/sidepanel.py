@@ -116,7 +116,7 @@ select_averaging_interval = dbc.Col(html.Div([html.H5(
 time_series = dbc.Col(
     dbc.Container([dbc.Row(dbc.Col([dcc.Graph(id='model', style={'height': '100%'})]), style={'height': '92%'}),
                    dbc.Row([timeline_toggle, timeline_year_selector, select_averaging_interval], style={'height': '8%'}, id='ts_controls')],
-                  style={"responsive": "true"},  # "height": "75vh",
+                  style={"height": "75%"},
                   fluid=True), width=8, lg=5)
 
 # ------------------------------- LEFT CONTROL PANEL -------------------------------
@@ -163,7 +163,7 @@ heat_map = dbc.Col(plots.layout, width=8, lg=5)
 
 
 # Combine all components into master layout
-layout = html.Div([navbar, dbc.Container([dbc.Row([controls, heat_map, time_series], style={'height': '90%', 'margin': '1'})],
+layout = html.Div([navbar, dbc.Container([dbc.Row([controls, heat_map, time_series], style={'height': '100%', 'margin': '1'})],
                                          style={"height": "100%", "width": "100%"}, fluid=True)],
                   style={"height": "100vh", "width": "100vw"}
                   )
