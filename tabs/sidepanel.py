@@ -19,9 +19,7 @@ years = [{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'l
          {'label': '2018', 'value': 2018}, {'label': '2019', 'value': 2019},
          {'label': '2015-2019 Average', 'value': 2000}]
 
-# External links for data sources and Rice logo
-AQ_source = 'https://www.tceq.texas.gov/agency/data/lookup-data/download-data.html'
-GHG_source = "https://science.jpl.nasa.gov/EarthScience/index.cfm"
+# External links for Rice logo
 RICE_LOGO = "https://cdn.freelogovectors.net/wp-content/uploads/2019/10/rice-university-logo.png"
 
 modal = html.Div(
@@ -51,9 +49,9 @@ modal = html.Div(
                                             
 
                                             #### Data sources
-                                            - [Air Quality](https://www.tceq.texas.gov/agency/data/lookup-data/download-data.html)
-                                            - [Greenhouse Gases](https://science.jpl.nasa.gov/EarthScience/index.cfm)
-                                            - [COVID Cases/Deaths](https://dshs.texas.gov/coronavirus/AdditionalData.aspx)
+                                            - Air Quality: [Texas Commission on Environmental Quality](https://www.tceq.texas.gov/agency/data/lookup-data/download-data.html)
+                                            - Greenhouse Gases: [National Aeronautics and Space Administration (NASA)](https://science.jpl.nasa.gov/EarthScience/index.cfm)
+                                            - COVID Cases/Deaths: [Texas Health and Human Services](https://dshs.texas.gov/coronavirus/AdditionalData.aspx)
 
                                     
                                             ''')),
@@ -158,10 +156,9 @@ controls = dbc.Col(html.Div([select_env_group, select_parameter, select_water_la
 # Import heat map from tab1
 heat_map = dbc.Col(plots.layout, width=8, lg=5)
 
-# Define text that shows data sources
-bottom_text = dbc.Col([dcc.Markdown('''---'''), html.Label([html.H6('Data Sources'), ' Air Quality: ', html.A('TCEQ', href=AQ_source, target="_blank"), ', Greenhouse Gases: ', html.A('NASA', href=GHG_source, target="_blank")])
-                       ])
 
 # Combine all components into master layout
-layout = html.Div([navbar, dbc.Container([dbc.Row([controls, heat_map, time_series], style={'height': '90%', 'margin': '1'}), dbc.Row(
-    [bottom_text], style={'height': '10%'})], style={"height": "100%", "width": "100%"}, fluid=True)], style={"height": "100vh", "width": "100vw"})
+layout = html.Div([navbar, dbc.Container([dbc.Row([controls, heat_map, time_series], style={'height': '90%', 'margin': '1'})],
+                                         style={"height": "100%", "width": "100%"}, fluid=True)],
+                  style={"height": "100vh", "width": "100vw"}
+                  )
