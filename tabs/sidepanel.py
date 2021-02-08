@@ -24,6 +24,46 @@ AQ_source = 'https://www.tceq.texas.gov/agency/data/lookup-data/download-data.ht
 GHG_source = "https://science.jpl.nasa.gov/EarthScience/index.cfm"
 RICE_LOGO = "https://cdn.freelogovectors.net/wp-content/uploads/2019/10/rice-university-logo.png"
 
+modal = html.Div(
+    [
+        dbc.Button(dcc.Markdown('''##### About'''), id="open",className="mr-1"),
+        dbc.Modal(
+            [
+                dbc.ModalHeader(dcc.Markdown('''### About''')),
+                dbc.ModalBody(dcc.Markdown('''
+                                            ##### Background
+                                            This dashboard was created as part of a research project investigating the envrionmental and socioeconomic impacts of the COVID-19 pandemic
+                                            at Rice University.   
+                                            
+                                            The data shown was collected during a period of March 2020 - August 1, 2020. 
+                                            ##### How to use
+                                            1. Select a group the top selector
+                                                * If you selected Air Quality or Greenhouse Gases, select an environmental indicator using the 'Select Parameter' dropdown
+                                                    1. Using the Mode selector, select if you'd like to see view your selected year or the difference between 2020 and your selected year
+                                                    2. Select if you'd like to see data on a monthly or yearly interval
+                                                    3. View the results on the heatmap and click on counties of interest to see a timeseries breakdown of emissions for a county
+                                                
+                                                * If you selected COVID Cases/Deaths, select either Race/Ethnicity to see a county breakdown of COVID incidence vs Race/Ethnicity or
+                                                select PM2.5 to see how PM2.5 concentration relates to COVID incidence
+                                            
+
+                                            ##### Data sources
+                                            - [Air Quality](https://www.tceq.texas.gov/agency/data/lookup-data/download-data.html)
+                                            - [Greenhouse Gases](https://science.jpl.nasa.gov/EarthScience/index.cfm)
+                                            - [COVID Cases/Deaths](https://dshs.texas.gov/coronavirus/AdditionalData.aspx)
+
+                                    
+                                            ''') ),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="close", className="ml-auto")
+                ),
+            ],
+            id="modal", centered= True
+        ),
+    ]
+)
+
+
 # ------------------------------- NAV BAR -------------------------------
 navbar = dbc.Navbar(
     [
@@ -46,7 +86,8 @@ navbar = dbc.Navbar(
             ),
             href="https://earthscience.rice.edu/",  # External link to Rice ESCI website
         ),
-        dbc.NavbarToggler(id="navbar-toggler"),
+        #dbc.NavbarToggler(id="navbar-toggler"),
+        modal
     ],
     color="light",
     dark=False, style={"position": "sticky", "top": "0", "width": "100%", "background": "#fff", "z-index": "2000"}

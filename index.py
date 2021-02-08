@@ -1,5 +1,5 @@
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from app import app, server
 from tabs import sidepanel
 from database import data_importer
@@ -125,6 +125,22 @@ def update_year_comparison_selector(compare_mode):
              {'label': '2015-2019 Average', 'value': 2000}, {'label': '2020', 'value': 2020}],
             html.H3("Viewing Year"))
 
+@app.callback(
+    Output("modal", "is_open"),
+    [Input("open", "n_clicks"), Input("close", "n_clicks")],
+    [State("modal", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+
+
+
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=3000, host = '127.0.0.1')
+
+
+
