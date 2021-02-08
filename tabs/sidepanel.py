@@ -22,6 +22,9 @@ years = [{'label': '2015', 'value': 2015}, {'label': '2016', 'value': 2016}, {'l
 # External links for Rice logo
 RICE_LOGO = "https://cdn.freelogovectors.net/wp-content/uploads/2019/10/rice-university-logo.png"
 
+
+# ------------------------------- ABOUT BUTTON -------------------------------
+
 modal = html.Div(
     [
         dbc.Button(dcc.Markdown('''##### About'''),
@@ -63,6 +66,7 @@ modal = html.Div(
             centered=True,
             scrollable=True,
             size="xl",
+            style={"margin-top": "8rem"}
         ),
     ]
 )
