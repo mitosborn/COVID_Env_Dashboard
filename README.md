@@ -6,7 +6,7 @@ Data Sources:
 2. [Greenhouse Gases](https://science.jpl.nasa.gov/EarthScience/index.cfm)
 
 
-Prototype currently hosted at https://rice-e-covid-tracker.herokuapp.com/
+Prototype currently hosted at http://tx-covid-enviromap.rice.edu/
 
 # Getting Started 
 To run the app locally: 
