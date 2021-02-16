@@ -40,11 +40,11 @@ modal = html.Div(
                                             The data shown was collected during a period of March 2020 - August 1, 2020.\n
                                         
                                             #### How to use
-                                            1. Select a group the top selector.
+                                            1. Select a group from the top selector.
                                                 * If Air Quality or Greenhouse Gases is selected, select an environmental indicator using the 'Select Parameter' dropdown.
                                                     * The *Mode Selector* allows you to view the selected year or the difference between 2020 and the selected year on the heatmap.
                                                     * Under *Interval*, you can select whether you'd like to see data on a monthly or yearly interval. If the interval is monthly, you can choose to 
-                                                    view data for a single month frmo January - July.
+                                                    view data for a single month from January - July.
                                                     * View the results of your selection on the heatmap. 
                                                     * Click on a county to see a timeseries breakdown of emissions for the selected county.
                                                 
@@ -63,6 +63,9 @@ modal = html.Div(
                                                 * [Website](https://sylviadeeclimate.org/)
                                             * If you have any questions or feedback you would like to provide regarding the website, please fill out 
                                             this [form https://forms.gle/giV2igcs44U7GWFo9](https://forms.gle/giV2igcs44U7GWFo9).
+
+                                            #### Undergraduate Collaborators
+                                                
                                     
                                             ''')),
                 dbc.ModalFooter(
