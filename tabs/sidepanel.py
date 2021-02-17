@@ -59,13 +59,15 @@ modal = html.Div(
 
 
                                             #### Contact Us
-                                            * Sylvia Dee: sylvia.dee@rice.edu
-                                                * [Website](https://sylviadeeclimate.org/)
+                                            * Sylvia Dee: 
+                                                * Email: sylvia.dee@rice.edu
+                                                * Website: [https://sylviadeeclimate.org/](https://sylviadeeclimate.org/)
                                             * If you have any questions or feedback you would like to provide regarding the website, please fill out 
                                             this [form https://forms.gle/giV2igcs44U7GWFo9](https://forms.gle/giV2igcs44U7GWFo9).
 
-                                            #### Undergraduate Collaborators
-                                                
+                                            #### Collaborators
+                                            Annie Xu, Mitchell Osborn, Sarah Preston, Sylvia G. Dee, Ted Loch-Temzelides, Mark Torres, Caroline Masiello, Daniel Cohan, 
+                                            Chima Adiole, Nathan Botton, Samantha Breaux, Melinda Ding, Benjamin Gelman, Lingkun Guo, Lucia Lu, Joanna Zhou
                                     
                                             ''')),
                 dbc.ModalFooter(
