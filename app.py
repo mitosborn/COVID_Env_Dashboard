@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from OpenSSL import SSL
+#from OpenSSL import SSL
 
 # #SSL certificates
 # context = SSL.Context(SSL.metho)
