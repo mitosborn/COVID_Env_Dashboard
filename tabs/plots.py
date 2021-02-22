@@ -334,7 +334,8 @@ def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_t
             case_title = 'COVID Cases vs PM2.5 Concentration'
             death_title = 'COVID Deaths vs PM2.5 Concentration'
             fig = make_subplots(rows=2, cols=1, specs=[[{"type": "scatter"}], [{"type": "scatter"}]], subplot_titles=(
-                'COVID Cases vs PM2.5 Concentration', 'COVID Deaths vs PM2.5 Concentration'))
+                'COVID Cases vs PM2.5 Concentration', 'COVID Deaths vs PM2.5 Concentration'), vertical_spacing=0.15)
+
         else:
             x_val = 'bah'
             x_title = 'Percentage Population Minority'
@@ -345,7 +346,7 @@ def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_t
                                     {"type": "scatter"}], [{"type": "scatter"}]],
                                 subplot_titles=(
                                     'Cost of COVID Deaths by Race/Ethnicity (Harris County)', case_title,
-                                    death_title))
+                                    death_title), vertical_spacing=0.15)
             frame = df['ECON']['harris_cty']
             frame_col = list(frame.columns)
             header = [x.capitalize() for x in list(frame.columns)]
@@ -373,7 +374,7 @@ def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_t
         fig.update_xaxes(title_text=x_title, row=row + 1, col=1)
         fig.update_yaxes(title_text='COVID Deaths/100k', row=row + 1, col=1)
         fig.update_layout(autosize=True, margin=dict(
-            l=80, r=18, b=0), height=1000)
+            l=80, r=18, b=0))
         fig['layout']['showlegend'] = False
         return fig
 
@@ -388,8 +389,7 @@ def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_t
             xref="paper",
             yref="paper",
             showarrow=False,
-            font_size=20
-        )
+            font_size=20)
     return fig
 
 

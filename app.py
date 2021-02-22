@@ -1,5 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
+from OpenSSL import SSL
+
+# #SSL certificates
+# context = SSL.Context(SSL.metho)
+# context.use_privatekey_file('server.key')
+# context.use_certificate_file('server.crt')
 
 app = dash.Dash(__name__, title="TX Covid-19 Enviro-Map",
                 suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.LUX])
