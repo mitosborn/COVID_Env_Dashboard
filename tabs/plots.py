@@ -11,6 +11,7 @@ import os
 import calendar
 from plotly.subplots import make_subplots
 import numpy as np
+
 df = data_importer.master_df
 
 PAGE_SIZE = 50
@@ -22,12 +23,49 @@ with open(os.path.join(base, 'counties.json')) as f:
     counties = geojson.load(f)
 superscript = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 mg3 = '(\u03BCg/m3)'.translate(superscript)
+
+# Define units for each environmental indicator
 aq_units = {'Ozone': 'ppm', 'PM2.5': 'μg/m3',
             'NOx': 'ppb', 'CO': 'ppm', 'NO': 'ppm'}
 econ_units = {"cumulative cases": 'cases', "cumulative deaths": 'deaths',
               "cumulative deaths per 100k": 'deaths/100k', "cumulative cases per 100k": 'cases/100k'}
 ghg_units = {"CO2": "ppm", "CH4": "ppm"}
 units = {"AQ": aq_units, "ECON": econ_units, "GHG": ghg_units}
+
+# def matplotlib_to_plotly(cmap, pl_entries):
+#     h = 1.0/(pl_entries-1)
+#     pl_colorscale = []
+#
+#     for k in range(pl_entries):
+#         C = map(np.uint8, np.array(cmap(k*h)[:3])*255)
+#         pl_colorscale.append([k*h, 'rgb'+str((C[0], C[1], C[2]))])
+#
+#     return pl_colorscale
+#
+# """
+# get_colormaps returns two colormaps used for the heatmap.
+# The first is the seismic colormap used for showing differences.
+# While the second is the inferno heatmap used for showing raw data.
+#
+# Inputs:
+#     None
+# Output:
+#     Two lists of colors in a tuple: seismic_rgb, inferno_rgb
+#
+# """
+# def get_colormaps():
+#     seismic_cmap = matplotlib.cm.get_cmap('magma')
+#     inferno_cmap = matplotlib.cm.get_cmap('viridis')
+#     norm = matplotlib.colors.Normalize(vmin=0, vmax=255)
+#
+#     seimsic_rgb = [matplotlib.colors.colorConverter.to_rgb(seismic_cmap(norm(i))) for i in range(0,255)]
+#     inferno_rgb = [matplotlib.colors.colorConverter.to_rgb(inferno_cmap(norm(i))) for i in range(0,255)]
+#     return matplotlib_to_plotly(seismic_cmap,255),  matplotlib_to_plotly(inferno_cmap,255)
+#
+#
+# #Define the colorscale for difference mode and regular data mode
+# seismic_colors, inferno_colors = get_colormaps()
+
 layout = dcc.Graph(id='cty_map', style={"height": '95%'})
 """
 get_map creates the central heat map. Returns map of Texas populated with user specified parameters.
@@ -59,11 +97,11 @@ def get_map(parameter, sub_group, comp_type, comp_year, comp_month, take_diff):
             trace = go.Choroplethmapbox(geojson=counties,
                                         locations=local_df['fips'].astype(str),
                                         z=local_df['pm2.5'],
-                                        colorscale='oranges',
+                                        colorscale='magma',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
                                         marker_line_color='white', name='pm 2.5 '+mg3, featureidkey='properties.FIPS',
                                         colorbar_title='PM 2.5 ' + mg3, colorbar_titlefont=dict(size=11),
-                                        colorbar_tickfont=dict(size=11), hovertemplate=text_template)
+                                        colorbar_tickfont=dict(size=11), hovertemplate=text_template, reversescale=True)
 
             fig.add_trace(trace)
             fig.update_layout(showlegend=True, title_text='Historical PM2.5 and COVID Incidence',
@@ -132,6 +170,7 @@ def get_map(parameter, sub_group, comp_type, comp_year, comp_month, take_diff):
         local_df = df[sub_group][parameter].copy()
 
         if take_diff:
+            colorscale = 'bluered'
             current = local_df[local_df['date'].dt.year == 2020].copy()
             current['month'] = current['date'].dt.month
             current = current.loc[:, ['fips', 'county', 'month', 'value']].groupby(
@@ -145,6 +184,7 @@ def get_map(parameter, sub_group, comp_type, comp_year, comp_month, take_diff):
             merged = merged.interpolate()
             print(past)
         else:
+            colorscale = 'inferno'
             current = local_df[local_df['date'].dt.year == year].copy()
             current['month'] = current['date'].dt.month
             current = current.loc[:, ['fips', 'county', 'month', 'value']].groupby(
@@ -167,7 +207,7 @@ def get_map(parameter, sub_group, comp_type, comp_year, comp_month, take_diff):
     trace = go.Choroplethmapbox(geojson=counties,
                                 locations=local_df['fips'].astype(str),
                                 z=local_df['value'].round(2),
-                                colorscale='reds', featureidkey='properties.FIPS',
+                                colorscale=colorscale, featureidkey='properties.FIPS',
                                 colorbar_thickness=20,
                                 text=local_df['county'],
                                 marker_line_color='white', customdata=local_df['fips'],
@@ -426,8 +466,6 @@ Returns:
     Scatter plot with a linear regression line 
 
 '''
-
-
 def get_trend_line(x_parameter, y_parameter):
     local_df = df['ECON']['econ_data']
     X = np.array(local_df[x_parameter]).reshape(-1, 1)
@@ -445,3 +483,4 @@ def get_trend_line(x_parameter, y_parameter):
                      line=dict(color="#eb3434"), name='Regression')
 
     return fig
+
