@@ -32,40 +32,6 @@ econ_units = {"cumulative cases": 'cases', "cumulative deaths": 'deaths',
 ghg_units = {"CO2": "ppm", "CH4": "ppm"}
 units = {"AQ": aq_units, "ECON": econ_units, "GHG": ghg_units}
 
-# def matplotlib_to_plotly(cmap, pl_entries):
-#     h = 1.0/(pl_entries-1)
-#     pl_colorscale = []
-#
-#     for k in range(pl_entries):
-#         C = map(np.uint8, np.array(cmap(k*h)[:3])*255)
-#         pl_colorscale.append([k*h, 'rgb'+str((C[0], C[1], C[2]))])
-#
-#     return pl_colorscale
-#
-# """
-# get_colormaps returns two colormaps used for the heatmap.
-# The first is the seismic colormap used for showing differences.
-# While the second is the inferno heatmap used for showing raw data.
-#
-# Inputs:
-#     None
-# Output:
-#     Two lists of colors in a tuple: seismic_rgb, inferno_rgb
-#
-# """
-# def get_colormaps():
-#     seismic_cmap = matplotlib.cm.get_cmap('magma')
-#     inferno_cmap = matplotlib.cm.get_cmap('viridis')
-#     norm = matplotlib.colors.Normalize(vmin=0, vmax=255)
-#
-#     seimsic_rgb = [matplotlib.colors.colorConverter.to_rgb(seismic_cmap(norm(i))) for i in range(0,255)]
-#     inferno_rgb = [matplotlib.colors.colorConverter.to_rgb(inferno_cmap(norm(i))) for i in range(0,255)]
-#     return matplotlib_to_plotly(seismic_cmap,255),  matplotlib_to_plotly(inferno_cmap,255)
-#
-#
-# #Define the colorscale for difference mode and regular data mode
-# seismic_colors, inferno_colors = get_colormaps()
-
 layout = dcc.Graph(id='cty_map', style={"height": '95%'})
 """
 get_map creates the central heat map. Returns map of Texas populated with user specified parameters.
