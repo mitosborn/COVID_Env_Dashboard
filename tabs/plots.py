@@ -14,6 +14,7 @@ import numpy as np
 
 df = data_importer.master_df
 
+
 PAGE_SIZE = 50
 mapbox_key = 'pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2ozcGI1MTZ3MDBpcTJ3cXR4b3owdDQwaCJ9.8jpMunbKjdq1anXwU5gxIw'
 # Import jsons
