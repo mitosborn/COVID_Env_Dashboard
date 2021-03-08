@@ -89,7 +89,7 @@ def get_map(parameter, sub_group, comp_type, comp_year, comp_month, take_diff):
                                         colorscale='oranges',
                                         colorbar_thickness=15, colorbar_len=0.7, colorbar_y=0.7,
                                         marker_line_color='white', name='Percent Minority: ',
-                                        colorbar_title='Percentage', colorbar_titlefont=dict(size=11),
+                                        colorbar_title='Percentage Minority', colorbar_titlefont=dict(size=11),
                                         colorbar_tickfont=dict(size=11), hovertemplate=text_template)
 
             fig.add_trace(trace)
@@ -184,6 +184,8 @@ def get_map(parameter, sub_group, comp_type, comp_year, comp_month, take_diff):
                                 units[sub_group][parameter] +
                                 '<extra></extra>',
                                 colorbar_title_text=title)
+    if not take_diff:
+        trace.reversescale = True
     print("Got here")
     fig = go.Figure(data=trace)
     if year == 2000:
