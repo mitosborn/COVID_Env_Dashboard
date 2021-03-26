@@ -235,25 +235,38 @@ Returns:
 
 
 @app.callback(Output('model', 'figure'), [Input('cty_map', 'clickData'), Input('parameter', 'value'), Input('sub-group', 'value'), Input('time_lines', 'value'), Input('years', 'value'),
-                                          Input('avg_type', 'value')])
-def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_type):
+                                          Input('avg_type', 'value'),Input('mode', 'value')])
+def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_type, take_diff):
     if clickData is not None and sub_group != 'ECON':
         years.append(2020)
         local_df = df[sub_group][parameter].copy()
+        print("Display click data diff value: "+ str(take_diff))
         fips_number = clickData["points"][0]['location']
         fips_number = str(int(fips_number))
         print(fips_number)
         print(local_df.head())
-        select = local_df[local_df['fips'] == fips_number].reset_index()
+        select = local_df[(local_df['fips'] == fips_number)].reset_index()
         select['date'] = pd.to_datetime(select['date'])
+        print("Post filter")
+        print(select.head())
         # Aggregate Data by county
         select = select.groupby(
             ['date', 'fips', 'county']).mean().reset_index()
+        if take_diff:
+            diff_frame = select[select['date'].dt.year == 2020].copy()
+            years.remove(2020)
         dataframes = {}
         for year in years:
             dataframe = select[select['date'].dt.year == year].copy()
             dataframe['date'] = dataframe['date'].apply(
                 lambda x: x.replace(year=2020))
+            if take_diff:
+                #dataframe = dataframe[dataframe['date'].isin(diff_frame['date'])]
+                print(dataframe['date'], ' space ', diff_frame['date'])
+                dataframe = pd.merge(diff_frame, dataframe, on = ['date','fips','county'], left_index = True, suffixes = ('','_old'))
+                dataframe = dataframe.interpolate()
+                dataframe['value'] = dataframe['value_old'] - dataframe['value']
+
             if avg_type == 'weekly':
                 dataframe = dataframe.groupby(['county', 'fips']).apply(
                     lambda x: x.resample('7D', on='date').mean()).reset_index()
@@ -276,8 +289,10 @@ def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_t
         print(dataframes)
         fig = px.line(title='Concentration of '+parameter + ' in ' +
                       select.loc[0, 'county'] + ' County', labels={'date': 'Date'})
-        label_style = {2020: {'label': '2020', 'color': '#0921ED'},
-                       2019: {'label': '2019', 'color': '#ED0925'}, 2018: {'label': '2018', 'color': '#09ED10'}, 2017: {'label': '2017', 'color': '#ED09ED'}, 2016: {'label': '2016', 'color': '#F6F79D'}, 2015: {'label': '2015', 'color': '#7EF3E5'}, 2000: {'label': 'Avg 2015-2019', 'color': '#94B8D5'}}
+        regular_width = 3
+        avg_width = 5
+        label_style = {2020: {'label': '2020', 'color': '#d73027', 'width': regular_width},
+                       2019: {'label': '2019', 'color': '#fc8d59', 'width': regular_width}, 2018: {'label': '2018', 'color': '#40004b', 'width': regular_width}, 2017: {'label': '2017', 'color': '#35978f', 'width': regular_width}, 2016: {'label': '2016', 'color': '#c51b7d', 'width': regular_width}, 2015: {'label': '2015', 'color': '#4575b4', 'width': regular_width}, 2000: {'label': 'Avg 2015-2019', 'color': '#313695', 'width': avg_width}}
         max_val = 0
         min_val = float('inf')
         # Add selected years to the plot
@@ -295,7 +310,7 @@ def display_click_data(clickData, parameter, sub_group, show_lines, years, avg_t
                     x=frame['date'],
                     y=frame['value'],
                     name=label_style[year]['label'],
-                    mode='lines',
+                    mode='lines', line_width = label_style[year]['width'],
                     line_color=label_style[year]['color'], hoverinfo='skip', hovertemplate='<b>'+label_style[year]['label']+'</b><br>Value: '+frame['value'].round(2).astype(str) + '<extra></extra>'
                 ))
             except:
