@@ -36,7 +36,7 @@ scipy==1.5.4
 six==1.15.0
 sklearn==0.0
 threadpoolctl==2.1.0
-urllib3==1.25.11
+urllib3==1.26.5
 Werkzeug==1.0.1
 yarg==0.1.9
 zope.interface==5.2.0
